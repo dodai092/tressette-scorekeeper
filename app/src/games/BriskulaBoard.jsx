@@ -75,7 +75,7 @@ export default function BriskulaBoard({
         setBanterJab(line);
         setLastBanterLine(line);
         setJabShown((prev) => ({ ...prev, [loserKey]: true }));
-      } else if (!banterJab) {
+      } else if (isTie || !banterJab) {
         setBanterJab(null);
       }
       return;
