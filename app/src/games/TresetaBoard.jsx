@@ -274,7 +274,7 @@ export default function TresetaBoard({
               pattern="[0-9]*"
               value={customPts1}
               onChange={(e) => handlePts1Change(e.target.value)}
-              placeholder={`${team1Name} bod. (0-${HAND_CAP})`}
+              placeholder={`${team1Name} (0-${HAND_CAP})`}
               aria-label={`${team1Name} bodovi ruke, 0 do ${HAND_CAP}`}
               className="w-full bg-white border border-amber-300 rounded-xl px-3 py-2 text-base font-semibold text-slate-900 outline-none focus:border-amber-600 focus-visible:ring-2 focus-visible:ring-amber-400 focus-visible:ring-offset-1 shadow-inner"
             />
