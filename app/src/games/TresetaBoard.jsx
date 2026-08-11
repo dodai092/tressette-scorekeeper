@@ -273,6 +273,8 @@ export default function TresetaBoard({
           <div className="flex-1 min-w-0">
             <input
               type="number"
+              inputMode="numeric"
+              pattern="[0-9]*"
               min="0"
               max={HAND_CAP}
               value={customPts1}
