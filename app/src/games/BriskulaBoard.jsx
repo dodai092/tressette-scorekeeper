@@ -186,11 +186,11 @@ export default function BriskulaBoard({
   return (
     <>
       {/* Partija / Match progress indicator */}
-      <div className="bg-emerald-900/80 border border-amber-500/30 p-2.5 rounded-2xl flex items-center justify-between text-xs font-semibold text-emerald-200 shadow-inner">
+      <div className="bg-emerald-900/80 border border-rose-500/40 p-2.5 rounded-2xl flex items-center justify-between text-xs font-semibold text-emerald-200 shadow-inner">
         <span>
           🃏 Partija {Math.min(currentPartija, PARTIJE_PER_MATCH)} of {PARTIJE_PER_MATCH}
         </span>
-        <span className="font-mono text-amber-300">
+        <span className="font-mono text-rose-300">
           Partije Won: {partijeWon1} - {partijeWon2}
         </span>
       </div>
@@ -221,7 +221,7 @@ export default function BriskulaBoard({
 
       {partijaCompleteInfo && (
         <div
-          className="motion-slide-fade-in bg-emerald-800/60 border border-amber-500/50 text-amber-100 text-xs font-semibold rounded-xl px-3 py-2.5 text-center space-y-2"
+          className="motion-slide-fade-in bg-emerald-800/60 border border-rose-500/50 text-rose-100 text-xs font-semibold rounded-xl px-3 py-2.5 text-center space-y-2"
           style={{ animation: "slide-fade-in 260ms cubic-bezier(0.16, 1, 0.3, 1)" }}
         >
           <p>
@@ -230,7 +230,7 @@ export default function BriskulaBoard({
           </p>
           <button
             onClick={startNextPartija}
-            className="w-full py-2 bg-amber-500/90 hover:bg-amber-500 text-slate-950 font-bold rounded-xl text-xs active:scale-95 transition"
+            className="w-full py-2 bg-rose-600 hover:bg-rose-500 text-white font-bold rounded-xl text-xs active:scale-95 transition"
           >
             Start Next Partija
           </button>
@@ -366,7 +366,7 @@ export default function BriskulaBoard({
             if (soundEnabled) playSound("tap");
             setShowConfirmModal(true);
           }}
-          className="w-full min-h-11 bg-transparent hover:bg-emerald-900/50 text-amber-200/70 hover:text-amber-200 border border-amber-500/25 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 active:scale-95 transition uppercase tracking-wider"
+          className="w-full min-h-11 bg-transparent hover:bg-emerald-900/50 text-rose-200/70 hover:text-rose-200 border border-rose-500/30 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 active:scale-95 transition uppercase tracking-wider"
         >
           <RefreshCw size={14} /> New Match
         </button>
@@ -379,10 +379,10 @@ export default function BriskulaBoard({
           style={{ animation: "fade-in 180ms ease-out" }}
         >
           <div
-            className="motion-modal-in bg-amber-50 border-2 border-amber-300 rounded-3xl p-5 max-w-xs w-full text-center space-y-3 shadow-2xl text-slate-900"
+            className="motion-modal-in bg-amber-50 border-2 border-rose-300 rounded-3xl p-5 max-w-xs w-full text-center space-y-3 shadow-2xl text-slate-900"
             style={{ animation: "modal-in 320ms cubic-bezier(0.16, 1, 0.3, 1)" }}
           >
-            <div className="w-12 h-12 bg-amber-100 text-amber-700 rounded-full flex items-center justify-center mx-auto border border-amber-300">
+            <div className="w-12 h-12 bg-rose-100 text-rose-700 rounded-full flex items-center justify-center mx-auto border border-rose-300">
               <AlertTriangle size={24} />
             </div>
             <div>
@@ -394,7 +394,7 @@ export default function BriskulaBoard({
             <div className="flex items-center gap-2 pt-2">
               <button
                 onClick={() => setShowConfirmModal(false)}
-                className="flex-1 py-2.5 bg-amber-200/80 hover:bg-amber-200 text-slate-800 font-bold rounded-xl text-xs active:scale-95 transition"
+                className="flex-1 py-2.5 bg-rose-100 hover:bg-rose-200 text-slate-800 font-bold rounded-xl text-xs active:scale-95 transition"
               >
                 Cancel
               </button>
@@ -416,10 +416,10 @@ export default function BriskulaBoard({
           style={{ animation: "fade-in 180ms ease-out" }}
         >
           <div
-            className="motion-modal-in bg-gradient-to-b from-amber-50 to-amber-100 border-2 border-amber-400 rounded-3xl p-6 max-w-xs w-full text-center space-y-4 shadow-2xl text-slate-900"
+            className="motion-modal-in bg-gradient-to-b from-amber-50 to-amber-100 border-2 border-rose-400 rounded-3xl p-6 max-w-xs w-full text-center space-y-4 shadow-2xl text-slate-900"
             style={{ animation: "modal-in 320ms cubic-bezier(0.16, 1, 0.3, 1)" }}
           >
-            <div className="w-16 h-16 bg-gradient-to-tr from-amber-500 to-yellow-300 text-slate-950 rounded-full flex items-center justify-center mx-auto shadow-lg shadow-amber-500/30">
+            <div className="w-16 h-16 bg-gradient-to-tr from-rose-600 to-rose-400 text-white rounded-full flex items-center justify-center mx-auto shadow-lg shadow-rose-500/30">
               {matchResult.sweep ? <PartyPopper size={32} /> : <Trophy size={32} />}
             </div>
             <div>
@@ -437,7 +437,7 @@ export default function BriskulaBoard({
                   <h2 className="text-xl font-black text-slate-900 font-serif tracking-wide">
                     {matchResult.sweep ? "ČESALJ! SWEEP! 🎉" : "MATCH WON! 🎉"}
                   </h2>
-                  <p className="text-base font-bold text-amber-900 mt-1">
+                  <p className="text-base font-bold text-rose-800 mt-1">
                     {matchResult.matchWinner} wins the match!
                   </p>
                   <p className="text-xs text-slate-600 mt-2">
@@ -445,7 +445,7 @@ export default function BriskulaBoard({
                     <strong className="text-slate-900">{partijeWon2}</strong>
                   </p>
                   {roastLine && (
-                    <p className="text-xs italic text-orange-800/80 mt-2 border-t border-amber-300/60 pt-2">
+                    <p className="text-xs italic text-orange-800/80 mt-2 border-t border-rose-300/60 pt-2">
                       🔥 {roastLine}
                     </p>
                   )}
@@ -454,7 +454,7 @@ export default function BriskulaBoard({
             </div>
             <button
               onClick={() => resetMatch(false)}
-              className="w-full py-3 bg-emerald-900 hover:bg-emerald-800 text-amber-200 font-bold rounded-xl text-xs uppercase tracking-wider shadow-md border border-amber-500/40"
+              className="w-full py-3 bg-emerald-900 hover:bg-emerald-800 text-rose-200 font-bold rounded-xl text-xs uppercase tracking-wider shadow-md border border-rose-500/40"
             >
               Start New Match
             </button>

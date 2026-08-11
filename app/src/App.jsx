@@ -203,9 +203,17 @@ export default function App() {
         {/* Game Mode Switcher */}
         <div className="bg-emerald-900/80 border border-amber-500/30 p-1 rounded-2xl flex text-xs font-semibold text-emerald-200 shadow-inner">
           {[
-            { key: "treseta", label: "🃏 Trešeta" },
-            { key: "briskula", label: "🎴 Briškula" },
-          ].map(({ key, label }) => (
+            {
+              key: "treseta",
+              label: "🃏 Trešeta",
+              activeClass: "bg-gradient-to-r from-amber-500 to-yellow-500 text-slate-950",
+            },
+            {
+              key: "briskula",
+              label: "🎴 Briškula",
+              activeClass: "bg-gradient-to-r from-rose-600 to-rose-500 text-white",
+            },
+          ].map(({ key, label, activeClass }) => (
             <button
               key={key}
               onClick={() => {
@@ -214,7 +222,7 @@ export default function App() {
               }}
               className={`flex-1 py-1.5 rounded-xl transition-all duration-200 flex items-center justify-center gap-1.5 ${
                 activeMode === key
-                  ? "bg-gradient-to-r from-amber-500 to-yellow-500 text-slate-950 font-bold shadow-md"
+                  ? `${activeClass} font-bold shadow-md`
                   : "hover:text-amber-200"
               }`}
             >
