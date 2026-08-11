@@ -10,6 +10,7 @@ export const DEFAULT_TRESETA_STATE = {
   gamesWon1: 0,
   gamesWon2: 0,
   rounds: [],
+  history: [],
 };
 
 export const DEFAULT_BRISKULA_STATE = {
@@ -20,6 +21,7 @@ export const DEFAULT_BRISKULA_STATE = {
   partijeWon2: 0,
   currentPartija: 1,
   completedPartije: [],
+  history: [],
 };
 
 const DEFAULT_STATE = {
@@ -61,3 +63,8 @@ export const savePersistedState = (state) => {
     // Storage unavailable (e.g. private mode) — fail silently.
   }
 };
+
+// Prepends a new entry to a history array, capping its length so
+// localStorage doesn't grow unbounded over months of play.
+export const addHistoryEntry = (history, entry, cap = 20) =>
+  [entry, ...history].slice(0, cap);
