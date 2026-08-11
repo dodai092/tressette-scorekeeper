@@ -106,8 +106,9 @@ export default function BriskulaBoard({
     }
   };
 
-  const addCardPoints = (team, value, cardName) => {
-    if (scoringLocked) return;
+  // Shared by card-value quick-add and manual entry — both just log a
+  // round with different `details` phrasing.
+  const addPoints = (team, value, details) => {
     if (soundEnabled) playSound("tap");
 
     const pts1 = team === 1 ? value : 0;
@@ -121,13 +122,40 @@ export default function BriskulaBoard({
       pts2,
       total1: updated1,
       total2: updated2,
-      details: `${team === 1 ? team1Name : team2Name} +${value} (${cardName})`,
+      details,
       timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
     };
 
     onUpdate({ rounds: [roundEntry, ...rounds], scoreTeam1: updated1, scoreTeam2: updated2 });
     if (soundEnabled) playSound("score");
     checkPartijaCondition(updated1, updated2);
+  };
+
+  const addCardPoints = (team, value, cardName) => {
+    if (scoringLocked) return;
+    addPoints(team, value, `${team === 1 ? team1Name : team2Name} +${value} (${cardName})`);
+  };
+
+  // Manual entry: for when typing a number is faster than tapping through
+  // several card buttons (e.g. tallying a few tricks at once). Clamped to
+  // the 120-point pool as a sanity bound, same spirit as Trešeta's clamp11.
+  const [manualPts, setManualPts] = useState("");
+  const clampManual = (n) => Math.min(PARTIJA_POOL, Math.max(0, n));
+
+  const handleManualPtsChange = (val) => {
+    if (val === "") {
+      setManualPts("");
+      return;
+    }
+    setManualPts(clampManual(parseInt(val) || 0).toString());
+  };
+
+  const addManualPoints = (team) => {
+    if (scoringLocked || manualPts === "") return;
+    const value = clampManual(parseInt(manualPts) || 0);
+    if (value <= 0) return;
+    addPoints(team, value, `${team === 1 ? team1Name : team2Name} +${value} (Manual)`);
+    setManualPts("");
   };
 
   const removeRoundById = (id) => {
@@ -179,12 +207,6 @@ export default function BriskulaBoard({
       setPartijaTieNotice(false);
     }
   };
-
-  const quickAmounts = CARD_POINTS.map(({ short, value }) => ({
-    value,
-    top: short,
-    bottom: `+${value}`,
-  }));
 
   return (
     <>
@@ -253,13 +275,6 @@ export default function BriskulaBoard({
           wonLabel="Partije Won"
           wonCount={partijeWon1}
           accentColor="blue"
-          onQuickAdd={(value) => {
-            const card = CARD_POINTS.find((c) => c.value === value);
-            addCardPoints(1, value, card.name);
-          }}
-          quickAmounts={quickAmounts}
-          quickAddHeading="Card Points:"
-          disabled={scoringLocked}
         />
         <TeamCard
           icon="🍷"
@@ -272,14 +287,73 @@ export default function BriskulaBoard({
           wonLabel="Partije Won"
           wonCount={partijeWon2}
           accentColor="red"
-          onQuickAdd={(value) => {
-            const card = CARD_POINTS.find((c) => c.value === value);
-            addCardPoints(2, value, card.name);
-          }}
-          quickAmounts={quickAmounts}
-          quickAddHeading="Card Points:"
-          disabled={scoringLocked}
         />
+      </div>
+
+      {/* CARD POINTS — full-width rows (not split across the two half-width
+          cards) so each of the 5 buttons stays a comfortable tap target. */}
+      <div className="bg-felt-panel/60 border border-rose-500/30 rounded-2xl p-3 space-y-2.5 shadow-inner">
+        <span className="text-[10px] font-bold text-felt-ink-rose/80 uppercase tracking-wider font-mono block px-1">
+          Card Points
+        </span>
+        {[
+          { team: 1, name: team1Name, nameCls: "text-blue-200", btnCls: "bg-blue-100 hover:bg-blue-200 text-blue-900 border-blue-300/60" },
+          { team: 2, name: team2Name, nameCls: "text-red-200", btnCls: "bg-red-100 hover:bg-red-200 text-red-900 border-red-300/60" },
+        ].map(({ team, name, nameCls, btnCls }) => (
+          <div key={team} className="flex items-center gap-1.5">
+            <span className={`text-[10px] font-bold w-12 shrink-0 truncate ${nameCls}`}>{name}</span>
+            <div className="flex-1 flex items-center gap-1.5">
+              {CARD_POINTS.map(({ name: cardName, short, value }) => (
+                <button
+                  key={short}
+                  onClick={() => addCardPoints(team, value, cardName)}
+                  disabled={scoringLocked}
+                  className={`flex-1 min-h-11 ${btnCls} font-bold rounded-xl active:scale-95 transition shadow-sm disabled:opacity-40 disabled:active:scale-100 flex flex-col items-center justify-center leading-tight py-1`}
+                >
+                  <span className="text-sm">{short}</span>
+                  <span className="text-[10px] opacity-80">+{value}</span>
+                </button>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* MANUAL POINT ENTRY — faster than tapping through several cards
+          when tallying a trick's worth of points at once. */}
+      <div className="bg-gradient-to-b from-amber-50 to-amber-100/90 rounded-2xl p-3 border-2 border-amber-300/80 shadow-md space-y-2 text-slate-900">
+        <div className="flex items-center justify-between text-[11px] font-bold text-amber-900 px-1">
+          <span className="flex items-center gap-1">✍️ Manual Points</span>
+        </div>
+        <div className="flex items-center gap-2">
+          <input
+            type="text"
+            inputMode="numeric"
+            pattern="[0-9]*"
+            value={manualPts}
+            onChange={(e) => handleManualPtsChange(e.target.value)}
+            placeholder="Pts"
+            aria-label="Manual points to add"
+            disabled={scoringLocked}
+            className="w-16 bg-white border border-amber-300 rounded-xl px-3 py-2 text-base font-semibold text-slate-900 outline-none focus:border-amber-600 focus-visible:ring-2 focus-visible:ring-amber-400 focus-visible:ring-offset-1 shadow-inner disabled:opacity-50"
+          />
+          <button
+            type="button"
+            onClick={() => addManualPoints(1)}
+            disabled={scoringLocked || manualPts === "" || Number(manualPts) <= 0}
+            className="flex-1 min-h-11 bg-blue-100 hover:bg-blue-200 text-blue-900 font-bold text-xs rounded-xl active:scale-95 transition shadow-sm disabled:opacity-40 disabled:active:scale-100"
+          >
+            + {team1Name}
+          </button>
+          <button
+            type="button"
+            onClick={() => addManualPoints(2)}
+            disabled={scoringLocked || manualPts === "" || Number(manualPts) <= 0}
+            className="flex-1 min-h-11 bg-red-100 hover:bg-red-200 text-red-900 font-bold text-xs rounded-xl active:scale-95 transition shadow-sm disabled:opacity-40 disabled:active:scale-100"
+          >
+            + {team2Name}
+          </button>
+        </div>
       </div>
 
       {/* THIS PARTIJA'S POINT LOG */}
@@ -292,7 +366,7 @@ export default function BriskulaBoard({
           {rounds.length > 0 && (
             <button
               onClick={undoLastRound}
-              className="text-xs text-amber-800 hover:text-amber-900 font-bold flex items-center gap-1"
+              className="min-h-11 px-2 text-xs text-amber-800 hover:text-amber-900 font-bold flex items-center gap-1"
             >
               <RotateCcw size={12} /> Undo Last
             </button>

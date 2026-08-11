@@ -194,7 +194,7 @@ export default function TresetaBoard({
               onUpdate({ targetScore: pts });
               if (soundEnabled) playSound("tap");
             }}
-            className={`flex-1 py-1.5 rounded-xl transition-all duration-200 flex items-center justify-center gap-1.5 ${
+            className={`flex-1 min-h-11 rounded-xl transition-all duration-200 flex items-center justify-center gap-1.5 ${
               targetScore === pts
                 ? "bg-gradient-to-r from-amber-500 to-yellow-500 text-slate-950 font-bold shadow-md"
                 : "hover:text-felt-ink"
@@ -310,7 +310,7 @@ export default function TresetaBoard({
           {rounds.length > 0 && (
             <button
               onClick={undoLastRound}
-              className="text-xs text-amber-800 hover:text-amber-900 font-bold flex items-center gap-1"
+              className="min-h-11 px-2 text-xs text-amber-800 hover:text-amber-900 font-bold flex items-center gap-1"
             >
               <RotateCcw size={12} /> Undo Last
             </button>

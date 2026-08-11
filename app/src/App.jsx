@@ -233,7 +233,7 @@ export default function App() {
                 setActiveMode(key);
                 if (soundEnabled) playSound("tap");
               }}
-              className={`flex-1 py-1.5 rounded-xl transition-all duration-200 flex items-center justify-center gap-1.5 ${
+              className={`flex-1 min-h-11 rounded-xl transition-all duration-200 flex items-center justify-center gap-1.5 ${
                 activeMode === key
                   ? `${MODE_ACCENTS[key].activeTab} font-bold shadow-md`
                   : "hover:text-felt-ink"

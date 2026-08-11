@@ -49,7 +49,7 @@ export const loadPersistedState = () => {
       treseta: { ...DEFAULT_TRESETA_STATE, ...parsed.treseta },
       briskula: { ...DEFAULT_BRISKULA_STATE, ...parsed.briskula },
     };
-  } catch (e) {
+  } catch {
     return DEFAULT_STATE;
   }
 };
@@ -57,7 +57,7 @@ export const loadPersistedState = () => {
 export const savePersistedState = (state) => {
   try {
     window.localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-  } catch (e) {
+  } catch {
     // Storage unavailable (e.g. private mode) — fail silently.
   }
 };

@@ -86,32 +86,34 @@ export default function TeamCard({
         </div>
       </div>
 
-      <div className="pt-2 border-t border-amber-200/80 space-y-1 mt-2">
-        <span className="text-[10px] font-bold text-slate-500 block uppercase tracking-wider">
-          {quickAddHeading}
-        </span>
-        <div className="flex items-center gap-1.5 justify-between">
-          {quickAmounts.map(({ value, top, bottom }) => (
-            <button
-              key={value}
-              onClick={() => onQuickAdd(value)}
-              disabled={disabled}
-              className={`flex-1 min-h-11 ${accent.quickBtn} font-bold rounded-xl active:scale-95 transition shadow-sm disabled:opacity-40 disabled:active:scale-100 ${
-                top ? "flex flex-col items-center justify-center leading-tight py-1" : "text-xs"
-              }`}
-            >
-              {top ? (
-                <>
-                  <span className="text-sm">{top}</span>
-                  <span className="text-[10px] opacity-80">{bottom}</span>
-                </>
-              ) : (
-                bottom
-              )}
-            </button>
-          ))}
+      {quickAmounts && quickAmounts.length > 0 && (
+        <div className="pt-2 border-t border-amber-200/80 space-y-1 mt-2">
+          <span className="text-[10px] font-bold text-slate-500 block uppercase tracking-wider">
+            {quickAddHeading}
+          </span>
+          <div className="flex items-center gap-1.5 justify-between">
+            {quickAmounts.map(({ value, top, bottom }) => (
+              <button
+                key={value}
+                onClick={() => onQuickAdd(value)}
+                disabled={disabled}
+                className={`flex-1 min-h-11 ${accent.quickBtn} font-bold rounded-xl active:scale-95 transition shadow-sm disabled:opacity-40 disabled:active:scale-100 ${
+                  top ? "flex flex-col items-center justify-center leading-tight py-1" : "text-xs"
+                }`}
+              >
+                {top ? (
+                  <>
+                    <span className="text-sm">{top}</span>
+                    <span className="text-[10px] opacity-80">{bottom}</span>
+                  </>
+                ) : (
+                  bottom
+                )}
+              </button>
+            ))}
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }
