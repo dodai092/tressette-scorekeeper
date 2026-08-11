@@ -49,13 +49,13 @@ export default function TresetaBoard({
   const [showConfirmModal, setShowConfirmModal] = useState(false);
 
   // Check win condition whenever scores change
-  const checkWinCondition = (updated1, updated2) => {
-    const winner = computeWinner(updated1, updated2, targetScore, team1Name, team2Name);
+  const checkWinCondition = (updated1, updated2, targetOverride = targetScore) => {
+    const winner = computeWinner(updated1, updated2, targetOverride, team1Name, team2Name);
     const gap = Math.abs(updated1 - updated2);
-    const gapThreshold = BANTER_GAP_THRESHOLD(targetScore);
+    const gapThreshold = BANTER_GAP_THRESHOLD(targetOverride);
 
     if (winner === null) {
-      const bothOverTarget = updated1 >= targetScore && updated2 >= targetScore;
+      const bothOverTarget = updated1 >= targetOverride && updated2 >= targetOverride;
       const isTie = bothOverTarget && updated1 === updated2;
       setTieNotice(isTie);
       if (banterEnabled && !isTie && gap >= gapThreshold) {
@@ -191,6 +191,7 @@ export default function TresetaBoard({
             key={pts}
             onClick={() => {
               onUpdate({ targetScore: pts });
+              checkWinCondition(scoreTeam1, scoreTeam2, pts);
               if (soundEnabled) playSound("tap");
             }}
             className={`flex-1 min-h-11 rounded-xl transition-all duration-200 flex items-center justify-center gap-1.5 ${
