@@ -15,4 +15,7 @@ export const BANTER_LINES = [
   "Taman da se iščistin lišina…",
 ];
 
-export const pickRandom = (pool) => pool[Math.floor(Math.random() * pool.length)];
+export const pickRandom = (pool, exclude) => {
+  const options = exclude != null && pool.length > 1 ? pool.filter((line) => line !== exclude) : pool;
+  return options[Math.floor(Math.random() * options.length)];
+};

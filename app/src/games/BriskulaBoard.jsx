@@ -50,6 +50,7 @@ export default function BriskulaBoard({
   const [partijaTieNotice, setPartijaTieNotice] = useState(false);
   const [banterJab, setBanterJab] = useState(null);
   const [roastLine, setRoastLine] = useState(null);
+  const [lastBanterLine, setLastBanterLine] = useState(null);
 
   const [partijaCompleteInfo, setPartijaCompleteInfo] = useState(null);
   const [showMatchWinnerModal, setShowMatchWinnerModal] = useState(false);
@@ -68,7 +69,9 @@ export default function BriskulaBoard({
       const isTie = total >= PARTIJA_POOL && updated1 === updated2;
       setPartijaTieNotice(isTie);
       if (banterEnabled && !isTie && gap >= BANTER_GAP_THRESHOLD) {
-        setBanterJab(pickRandom(BANTER_LINES));
+        const line = pickRandom(BANTER_LINES, lastBanterLine);
+        setBanterJab(line);
+        setLastBanterLine(line);
       } else {
         setBanterJab(null);
       }
@@ -94,7 +97,9 @@ export default function BriskulaBoard({
 
     if (status.matchOver) {
       if (banterEnabled && status.matchWinner) {
-        setRoastLine(pickRandom(BANTER_LINES));
+        const line = pickRandom(BANTER_LINES, lastBanterLine);
+        setRoastLine(line);
+        setLastBanterLine(line);
       } else {
         setRoastLine(null);
       }
