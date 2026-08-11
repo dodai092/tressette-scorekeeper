@@ -9,6 +9,7 @@ import {
   Trash2,
 } from "lucide-react";
 import { playSound } from "../sound.js";
+import { addHistoryEntry } from "../storage.js";
 import { BANTER_LINES, pickRandom } from "../banter.js";
 import TeamCard from "../components/TeamCard.jsx";
 import BanterOverlay from "../components/BanterOverlay.jsx";
@@ -32,7 +33,7 @@ export default function TresetaBoard({
   state,
   onUpdate,
 }) {
-  const { targetScore, scoreTeam1, scoreTeam2, gamesWon1, gamesWon2, rounds } = state;
+  const { targetScore, scoreTeam1, scoreTeam2, gamesWon1, gamesWon2, rounds, history } = state;
 
   const accent = MODE_ACCENTS.treseta;
 
@@ -81,11 +82,25 @@ export default function TresetaBoard({
     } else {
       setRoastLine(null);
     }
-    onUpdate(
-      winner === team1Name
+    const historyEntry = {
+      id: Date.now(),
+      winner,
+      score1: updated1,
+      score2: updated2,
+      targetScore: targetOverride,
+      playedAt: new Date().toLocaleString([], {
+        day: "2-digit",
+        month: "2-digit",
+        hour: "2-digit",
+        minute: "2-digit",
+      }),
+    };
+    onUpdate({
+      ...(winner === team1Name
         ? { gamesWon1: gamesWon1 + 1 }
-        : { gamesWon2: gamesWon2 + 1 }
-    );
+        : { gamesWon2: gamesWon2 + 1 }),
+      history: addHistoryEntry(history, historyEntry),
+    });
     setWinnerTeam(winner);
     setShowWinnerModal(true);
     if (soundEnabled) playSound("win");
@@ -367,6 +382,30 @@ export default function TresetaBoard({
           </div>
         )}
       </div>
+
+      {/* PAST GAMES */}
+      {history.length > 0 && (
+        <div className="bg-gradient-to-b from-amber-50 to-amber-100/90 rounded-3xl p-4 border-2 border-amber-300/80 shadow-xl space-y-2 text-slate-900">
+          <h2 className="text-xs font-bold text-slate-900 flex items-center gap-1.5 font-serif border-b border-amber-200/80 pb-2">
+            <Trophy size={14} className="text-amber-700" />
+            Prošle igre ({history.length})
+          </h2>
+          <div className="space-y-1.5 max-h-64 overflow-y-auto pr-1">
+            {history.map((h) => (
+              <div
+                key={h.id}
+                className="flex items-center justify-between bg-white/80 p-2 rounded-xl text-xs border border-amber-200/80"
+              >
+                <span className="text-slate-500 font-mono text-[10px] shrink-0">{h.playedAt}</span>
+                <span className="font-bold text-amber-800 text-[11px] truncate px-2">{h.winner} pobjeđuje</span>
+                <span className="font-mono font-bold text-slate-900 text-[11px] shrink-0">
+                  {h.score1} - {h.score2}
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* Reset Action */}
       <div className="pt-1">
