@@ -238,7 +238,7 @@ export default function TresetaBoard({
             { value: 3, bottom: "+3" },
             { value: 4, bottom: "+4" },
           ]}
-          quickAddHeading="Akuže (Declarations):"
+          quickAddHeading="Akuže:"
         />
         <TeamCard
           icon="🍷"
@@ -256,7 +256,7 @@ export default function TresetaBoard({
             { value: 3, bottom: "+3" },
             { value: 4, bottom: "+4" },
           ]}
-          quickAddHeading="Akuže (Declarations):"
+          quickAddHeading="Akuže:"
         />
       </div>
 
