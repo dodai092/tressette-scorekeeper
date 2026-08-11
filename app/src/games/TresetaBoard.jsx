@@ -11,6 +11,7 @@ import {
 import { playSound } from "../sound.js";
 import { LOSING_JABS, ROAST_LINES, pickRandom } from "../banter.js";
 import TeamCard from "../components/TeamCard.jsx";
+import { MODE_ACCENTS } from "../modeAccents.js";
 import {
   TARGET_SCORE_OPTIONS,
   HAND_CAP,
@@ -31,6 +32,8 @@ export default function TresetaBoard({
   onUpdate,
 }) {
   const { targetScore, scoreTeam1, scoreTeam2, gamesWon1, gamesWon2, rounds } = state;
+
+  const accent = MODE_ACCENTS.treseta;
 
   // Single input point entry for Team 1 (0 to HAND_CAP)
   const [customPts1, setCustomPts1] = useState("");
@@ -183,7 +186,7 @@ export default function TresetaBoard({
   return (
     <>
       {/* Target Score Segmented Control */}
-      <div className="bg-emerald-900/80 border border-amber-500/30 p-1 rounded-2xl flex text-xs font-semibold text-emerald-200 shadow-inner">
+      <div className="bg-felt-panel/80 border border-amber-500/30 p-1 rounded-2xl flex text-xs font-semibold text-felt-ink-muted shadow-inner">
         {TARGET_SCORE_OPTIONS.map((pts) => (
           <button
             key={pts}
@@ -194,7 +197,7 @@ export default function TresetaBoard({
             className={`flex-1 py-1.5 rounded-xl transition-all duration-200 flex items-center justify-center gap-1.5 ${
               targetScore === pts
                 ? "bg-gradient-to-r from-amber-500 to-yellow-500 text-slate-950 font-bold shadow-md"
-                : "hover:text-amber-200"
+                : "hover:text-felt-ink"
             }`}
           >
             <span>🏆 Goal {pts} pt</span>
@@ -204,7 +207,7 @@ export default function TresetaBoard({
 
       {tieNotice && (
         <div
-          className="motion-slide-fade-in bg-amber-500/20 border border-amber-500/60 text-amber-200 text-xs font-semibold rounded-xl px-3 py-2 text-center"
+          className="motion-slide-fade-in bg-amber-500/20 border border-amber-500/60 text-felt-ink text-xs font-semibold rounded-xl px-3 py-2 text-center"
           style={{ animation: "slide-fade-in 260ms cubic-bezier(0.16, 1, 0.3, 1)" }}
         >
           Tied at {scoreTeam1} — keep playing until someone's ahead.
@@ -213,7 +216,7 @@ export default function TresetaBoard({
 
       {banterJab && (
         <div
-          className="motion-slide-fade-in bg-orange-500/15 border border-orange-500/40 text-orange-200 text-xs font-semibold rounded-xl px-3 py-2 text-center italic"
+          className="motion-slide-fade-in bg-orange-500/15 border border-orange-500/40 text-felt-banter-ink text-xs font-semibold rounded-xl px-3 py-2 text-center italic"
           style={{ animation: "slide-fade-in 260ms cubic-bezier(0.16, 1, 0.3, 1)" }}
         >
           🔥 {banterJab}
@@ -369,7 +372,7 @@ export default function TresetaBoard({
             if (soundEnabled) playSound("tap");
             setShowConfirmModal(true);
           }}
-          className="w-full min-h-11 bg-transparent hover:bg-emerald-900/50 text-amber-200/70 hover:text-amber-200 border border-amber-500/25 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 active:scale-95 transition uppercase tracking-wider"
+          className={`w-full min-h-11 bg-transparent hover:bg-felt-panel/50 border rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 active:scale-95 transition uppercase tracking-wider ${accent.resetButton}`}
         >
           <RefreshCw size={14} /> New Game
         </button>

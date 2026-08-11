@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { Volume2, VolumeX, Zap, Flame } from "lucide-react";
+import { Volume2, VolumeX, Zap, Flame, Sun, Moon } from "lucide-react";
 import { playSound } from "./sound.js";
 import { loadPersistedState, savePersistedState } from "./storage.js";
 import { MODE_ACCENTS } from "./modeAccents.js";
@@ -27,6 +27,10 @@ export default function App() {
 
   // UI & Audio State — shared across both modes.
   const [soundEnabled, setSoundEnabled] = useState(true);
+
+  // Light/dark felt theme. Session preference like the toggles below —
+  // always opens in dark felt, not persisted across reloads.
+  const [theme, setTheme] = useState("dark");
 
   // Banter: lighthearted taunts for whoever's losing. Off = no jabs, no
   // roast (mirrors soundEnabled: a session preference, not persisted).
@@ -82,7 +86,10 @@ export default function App() {
   }, [activeMode, team1Name, team2Name, tresetaState, briskulaState]);
 
   return (
-    <div className="min-h-screen bg-emerald-950 text-amber-50 flex flex-col font-serif select-none pb-12 relative overflow-hidden">
+    <div
+      data-theme={theme === "light" ? "light" : undefined}
+      className="min-h-screen bg-felt text-amber-50 flex flex-col font-serif select-none pb-12 relative overflow-hidden"
+    >
       <style>{`
         @keyframes score-pop {
           0% { transform: scale(1); }
@@ -115,15 +122,15 @@ export default function App() {
       <div className="absolute inset-0 bg-[radial-gradient(#15803d_1px,transparent_1px)] [background-size:16px_16px] opacity-20 pointer-events-none"></div>
 
       {/* Card Table Header */}
-      <header className="sticky top-0 z-30 bg-emerald-900/90 backdrop-blur-md border-b border-amber-600/30 px-4 py-3 flex flex-wrap items-center gap-y-2 shadow-lg">
+      <header className="sticky top-0 z-30 bg-felt-panel/90 backdrop-blur-md border-b border-amber-600/30 px-4 py-3 flex flex-wrap items-center gap-y-2 shadow-lg">
         <div className="flex items-center space-x-2.5">
           <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-amber-600 via-amber-500 to-yellow-400 p-0.5 shadow-md shadow-amber-900/50">
-            <div className="w-full h-full bg-emerald-950 rounded-[10px] flex items-center justify-center">
+            <div className="w-full h-full bg-felt rounded-[10px] flex items-center justify-center">
               <span className="text-lg">🎴</span>
             </div>
           </div>
           <div>
-            <h1 className="font-bold text-base text-amber-200 tracking-wide font-serif leading-none flex items-center gap-1.5">
+            <h1 className="font-bold text-base text-felt-ink tracking-wide font-serif leading-none flex items-center gap-1.5">
               Tressette
             </h1>
           </div>
@@ -138,8 +145,8 @@ export default function App() {
             }}
             className={`min-w-11 min-h-11 rounded-full flex items-center justify-center border transition active:scale-95 ${
               soundEnabled
-                ? "bg-amber-500/20 border-amber-500/60 text-amber-300"
-                : "bg-emerald-900 border-emerald-700/60 text-emerald-300"
+                ? "bg-amber-500/20 border-amber-500/60 text-felt-ink"
+                : "bg-felt-panel border-felt-panel-border text-felt-ink-muted"
             }`}
             title="Sound"
             aria-label={soundEnabled ? "Mute sound" : "Unmute sound"}
@@ -157,8 +164,8 @@ export default function App() {
             disabled={!wakeLockSupported}
             className={`min-w-11 min-h-11 rounded-full flex items-center justify-center border transition active:scale-95 disabled:opacity-40 disabled:active:scale-100 ${
               screenLocked
-                ? "bg-amber-500/20 border-amber-500/60 text-amber-300"
-                : "bg-emerald-900 border-emerald-700/60 text-emerald-300"
+                ? "bg-amber-500/20 border-amber-500/60 text-felt-ink"
+                : "bg-felt-panel border-felt-panel-border text-felt-ink-muted"
             }`}
             title={
               wakeLockSupported
@@ -187,8 +194,8 @@ export default function App() {
             }}
             className={`min-w-11 min-h-11 rounded-full flex items-center justify-center border transition active:scale-95 ${
               banterEnabled
-                ? "bg-amber-500/20 border-amber-500/60 text-amber-300"
-                : "bg-emerald-900 border-emerald-700/60 text-emerald-500"
+                ? "bg-amber-500/20 border-amber-500/60 text-felt-ink"
+                : "bg-felt-panel border-felt-panel-border text-felt-ink-muted"
             }`}
             title="Banter (taunt the loser)"
             aria-label={banterEnabled ? "Turn off banter" : "Turn on banter"}
@@ -196,13 +203,26 @@ export default function App() {
           >
             <Flame size={16} className={banterEnabled ? "fill-amber-400" : ""} />
           </button>
+
+          <button
+            onClick={() => {
+              setTheme(theme === "dark" ? "light" : "dark");
+              if (soundEnabled) playSound("tap");
+            }}
+            className="min-w-11 min-h-11 rounded-full flex items-center justify-center border transition active:scale-95 bg-amber-500/20 border-amber-500/60 text-felt-ink"
+            title="Light / dark felt"
+            aria-label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
+            aria-pressed={theme === "light"}
+          >
+            {theme === "dark" ? <Moon size={16} /> : <Sun size={16} className="fill-amber-400 text-amber-400" />}
+          </button>
         </div>
       </header>
 
       {/* Main Content Area */}
       <main className="flex-1 max-w-md mx-auto w-full px-4 py-4 flex flex-col space-y-4 z-10 font-sans">
         {/* Game Mode Switcher */}
-        <div className="bg-emerald-900/80 border border-amber-500/30 p-1 rounded-2xl flex text-xs font-semibold text-emerald-200 shadow-inner">
+        <div className="bg-felt-panel/80 border border-amber-500/30 p-1 rounded-2xl flex text-xs font-semibold text-felt-ink-muted shadow-inner">
           {[
             { key: "treseta", label: "🃏 Trešeta" },
             { key: "briskula", label: "🎴 Briškula" },
@@ -216,7 +236,7 @@ export default function App() {
               className={`flex-1 py-1.5 rounded-xl transition-all duration-200 flex items-center justify-center gap-1.5 ${
                 activeMode === key
                   ? `${MODE_ACCENTS[key].activeTab} font-bold shadow-md`
-                  : "hover:text-amber-200"
+                  : "hover:text-felt-ink"
               }`}
             >
               <span>{label}</span>

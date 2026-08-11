@@ -1,7 +1,32 @@
 @import "tailwindcss";
 
+/* "On-felt" neutral tokens only — the parchment cards, mode accents
+   (Gold Leaf/Garnet), and team colors (Harbor Blue/Team Crimson) are
+   already contrast-verified against both themes and stay unchanged.
+   Dark values here match the original hardcoded felt-table palette;
+   [data-theme="light"] below overrides them for the Sunlit Felt look. */
+@theme {
+  --color-felt: #022c22;
+  --color-felt-panel: #064e3b;
+  --color-felt-panel-border: #047857;
+  --color-felt-ink: #fde68a;
+  --color-felt-ink-muted: #a7f3d0;
+  --color-felt-ink-rose: #fecdd3;
+  --color-felt-banter-ink: #fed7aa;
+}
+
+[data-theme="light"] {
+  --color-felt: #dcefe1;
+  --color-felt-panel: #c9e8d3;
+  --color-felt-panel-border: #86c9a0;
+  --color-felt-ink: #92400e;
+  --color-felt-ink-muted: #065f46;
+  --color-felt-ink-rose: #9f1239;
+  --color-felt-banter-ink: #9a3412;
+}
+
 html,
 body {
-  background-color: #022c22;
+  background-color: var(--color-felt);
   overscroll-behavior-y: none;
 }

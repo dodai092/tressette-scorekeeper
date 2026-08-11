@@ -189,7 +189,7 @@ export default function BriskulaBoard({
   return (
     <>
       {/* Partija / Match progress indicator */}
-      <div className={`bg-emerald-900/80 border ${accent.progressBorder} p-2.5 rounded-2xl flex items-center justify-between text-xs font-semibold text-emerald-200 shadow-inner`}>
+      <div className={`bg-felt-panel/80 border ${accent.progressBorder} p-2.5 rounded-2xl flex items-center justify-between text-xs font-semibold text-felt-ink-muted shadow-inner`}>
         <span>
           🃏 Partija {Math.min(currentPartija, PARTIJE_PER_MATCH)} of {PARTIJE_PER_MATCH}
         </span>
@@ -200,7 +200,7 @@ export default function BriskulaBoard({
 
       {partijaTieNotice && (
         <div
-          className="motion-slide-fade-in bg-amber-500/20 border border-amber-500/60 text-amber-200 text-xs font-semibold rounded-xl px-3 py-2 text-center flex items-center justify-between gap-2"
+          className="motion-slide-fade-in bg-amber-500/20 border border-amber-500/60 text-felt-ink text-xs font-semibold rounded-xl px-3 py-2 text-center flex items-center justify-between gap-2"
           style={{ animation: "slide-fade-in 260ms cubic-bezier(0.16, 1, 0.3, 1)" }}
         >
           <span>Partija tied {scoreTeam1}-{scoreTeam2} — replay it.</span>
@@ -215,7 +215,7 @@ export default function BriskulaBoard({
 
       {banterJab && (
         <div
-          className="motion-slide-fade-in bg-orange-500/15 border border-orange-500/40 text-orange-200 text-xs font-semibold rounded-xl px-3 py-2 text-center italic"
+          className="motion-slide-fade-in bg-orange-500/15 border border-orange-500/40 text-felt-banter-ink text-xs font-semibold rounded-xl px-3 py-2 text-center italic"
           style={{ animation: "slide-fade-in 260ms cubic-bezier(0.16, 1, 0.3, 1)" }}
         >
           🔥 {banterJab}
@@ -224,7 +224,7 @@ export default function BriskulaBoard({
 
       {partijaCompleteInfo && (
         <div
-          className={`motion-slide-fade-in bg-emerald-800/60 border ${accent.bannerBorder} ${accent.bannerText} text-xs font-semibold rounded-xl px-3 py-2.5 text-center space-y-2`}
+          className={`motion-slide-fade-in bg-felt-panel/60 border ${accent.bannerBorder} ${accent.bannerText} text-xs font-semibold rounded-xl px-3 py-2.5 text-center space-y-2`}
           style={{ animation: "slide-fade-in 260ms cubic-bezier(0.16, 1, 0.3, 1)" }}
         >
           <p>
@@ -369,7 +369,7 @@ export default function BriskulaBoard({
             if (soundEnabled) playSound("tap");
             setShowConfirmModal(true);
           }}
-          className={`w-full min-h-11 bg-transparent hover:bg-emerald-900/50 border rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 active:scale-95 transition uppercase tracking-wider ${accent.resetButton}`}
+          className={`w-full min-h-11 bg-transparent hover:bg-felt-panel/50 border rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 active:scale-95 transition uppercase tracking-wider ${accent.resetButton}`}
         >
           <RefreshCw size={14} /> New Match
         </button>
