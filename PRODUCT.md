@@ -25,13 +25,12 @@ That rule-accuracy is the actual reason this exists over a generic counter — n
 
 ## Operating Context
 
-Used mid-game, at a physical table, likely one-handed while holding cards. Sessions are short bursts of taps between hands/partije, interleaved with real conversation and play — the UI needs to stay out of the way and not demand attention beyond quick score entry. The Wake Lock ("keep screen awake") toggle exists because the phone sits idle on the table between taps and shouldn't lock mid-game. Two independent modes (Trešeta / Briškula) each keep their own in-progress match state, since a household may have one game going in each.
+Used mid-game, at a physical table, likely one-handed while holding cards. Sessions are short bursts of taps between hands/partije, interleaved with real conversation and play — the UI needs to stay out of the way and not demand attention beyond quick score entry. Two independent modes (Trešeta / Briškula) each keep their own in-progress match state, since a household may have one game going in each.
 
 ## Capabilities and Constraints
 
-- Two independently-scored game modes (Trešeta, Briškula) behind a shared shell: header, team names, Sound/Wake-Lock/Banter toggles.
+- Two independently-scored game modes (Trešeta, Briškula) behind a shared shell: header, team names, Sound/Banter toggles.
 - No backend, no accounts — `localStorage` only, versioned schema (`tressette-scorekeeper-state-v2`), falls back to defaults on any old/mismatched shape rather than migrating.
-- Wake Lock API requires a secure context (https/localhost); the toggle is present but disabled with an explanation when unavailable (e.g. testing over plain http on a LAN IP).
 - Deployed as a static site to GitHub Pages under a subpath (`/tressette-scorekeeper/`), auto-deployed via GitHub Actions on push to `main`.
 - Optional "Banter" system (on by default, toggleable) shows lighthearted, Michael-Scott-register taunt lines for whoever's losing; purely cosmetic, never affects scoring.
 

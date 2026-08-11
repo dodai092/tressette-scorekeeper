@@ -58,7 +58,7 @@ export default function TeamCard({
               type="text"
               value={name}
               onChange={(e) => onNameChange(e.target.value)}
-              className={`bg-transparent font-black text-base ${accent.text} tracking-tight w-full outline-none border-b border-dashed ${accent.border} ${accent.ring} rounded-sm py-0.5 pr-5 font-serif`}
+              className={`bg-transparent font-black text-xl ${accent.text} tracking-tight w-full outline-none border-b border-dashed ${accent.border} ${accent.ring} rounded-sm py-0.5 pr-5 font-serif`}
               placeholder={namePlaceholder}
               aria-label={`${label} name`}
             />

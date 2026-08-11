@@ -7,3 +7,4 @@ dist-ssr
 # Local tooling / session artifacts — not part of the app
 .claude
 .playwright-mcp
+.superpowers

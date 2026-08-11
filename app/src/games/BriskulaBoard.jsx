@@ -10,8 +10,9 @@ import {
   PartyPopper,
 } from "lucide-react";
 import { playSound } from "../sound.js";
-import { LOSING_JABS, ROAST_LINES, pickRandom } from "../banter.js";
+import { BANTER_LINES, pickRandom } from "../banter.js";
 import TeamCard from "../components/TeamCard.jsx";
+import BanterOverlay from "../components/BanterOverlay.jsx";
 import { MODE_ACCENTS } from "../modeAccents.js";
 import {
   PARTIJA_POOL,
@@ -67,8 +68,7 @@ export default function BriskulaBoard({
       const isTie = total >= PARTIJA_POOL && updated1 === updated2;
       setPartijaTieNotice(isTie);
       if (banterEnabled && !isTie && gap >= BANTER_GAP_THRESHOLD) {
-        const loserName = updated1 < updated2 ? team1Name : team2Name;
-        setBanterJab(pickRandom(LOSING_JABS, loserName, gap));
+        setBanterJab(pickRandom(BANTER_LINES));
       } else {
         setBanterJab(null);
       }
@@ -94,8 +94,7 @@ export default function BriskulaBoard({
 
     if (status.matchOver) {
       if (banterEnabled && status.matchWinner) {
-        const loserName = status.matchWinner === team1Name ? team2Name : team1Name;
-        setRoastLine(pickRandom(ROAST_LINES, loserName, Math.abs(newPartijeWon1 - newPartijeWon2)));
+        setRoastLine(pickRandom(BANTER_LINES));
       } else {
         setRoastLine(null);
       }
@@ -213,10 +212,10 @@ export default function BriskulaBoard({
       {/* Partija / Match progress indicator */}
       <div className={`bg-felt-panel/80 border ${accent.progressBorder} p-2.5 rounded-2xl flex items-center justify-between text-xs font-semibold text-felt-ink-muted shadow-inner`}>
         <span>
-          🃏 Partija {Math.min(currentPartija, PARTIJE_PER_MATCH)} of {PARTIJE_PER_MATCH}
+          🃏 Partija {Math.min(currentPartija, PARTIJE_PER_MATCH)} od {PARTIJE_PER_MATCH}
         </span>
         <span className={`font-mono ${accent.progressText}`}>
-          Partije Won: {partijeWon1} - {partijeWon2}
+          Partije: {partijeWon1} - {partijeWon2}
         </span>
       </div>
 
@@ -225,22 +224,13 @@ export default function BriskulaBoard({
           className="motion-slide-fade-in bg-amber-500/20 border border-amber-500/60 text-felt-ink text-xs font-semibold rounded-xl px-3 py-2 text-center flex items-center justify-between gap-2"
           style={{ animation: "slide-fade-in 260ms cubic-bezier(0.16, 1, 0.3, 1)" }}
         >
-          <span>Partija tied {scoreTeam1}-{scoreTeam2} — replay it.</span>
+          <span>Partija neriješena {scoreTeam1}-{scoreTeam2} — odigrajte ponovno.</span>
           <button
             onClick={replayTiedPartija}
             className="shrink-0 px-2 py-1 bg-amber-500/30 hover:bg-amber-500/40 rounded-lg text-[11px] font-bold"
           >
-            Replay
+            Ponovi
           </button>
-        </div>
-      )}
-
-      {banterJab && (
-        <div
-          className="motion-slide-fade-in bg-orange-500/15 border border-orange-500/40 text-felt-banter-ink text-xs font-semibold rounded-xl px-3 py-2 text-center italic"
-          style={{ animation: "slide-fade-in 260ms cubic-bezier(0.16, 1, 0.3, 1)" }}
-        >
-          🔥 {banterJab}
         </div>
       )}
 
@@ -250,51 +240,54 @@ export default function BriskulaBoard({
           style={{ animation: "slide-fade-in 260ms cubic-bezier(0.16, 1, 0.3, 1)" }}
         >
           <p>
-            🏁 Partija {partijaCompleteInfo.partijaNumber} complete — {partijaCompleteInfo.winner}{" "}
-            wins {partijaCompleteInfo.score1}-{partijaCompleteInfo.score2}!
+            🏁 Partija {partijaCompleteInfo.partijaNumber} završena — {partijaCompleteInfo.winner}{" "}
+            pobjeđuje {partijaCompleteInfo.score1}-{partijaCompleteInfo.score2}!
           </p>
           <button
             onClick={startNextPartija}
             className={`w-full py-2 ${accent.primaryButton} font-bold rounded-xl text-xs active:scale-95 transition`}
           >
-            Start Next Partija
+            Sljedeća partija
           </button>
         </div>
       )}
 
       {/* TEAM 1 & TEAM 2 PARCHMENT CARDS */}
-      <div className="grid grid-cols-2 gap-3">
+      <div className="relative grid grid-cols-2 gap-3">
         <TeamCard
           icon="⚔️"
-          label="Team A"
+          label="Ekipa A"
           name={team1Name}
           onNameChange={onTeam1NameChange}
-          namePlaceholder="Us"
+          namePlaceholder="Mi"
           score={scoreTeam1}
-          scoreSuffix={`/ ${WIN_THRESHOLD} to Win`}
-          wonLabel="Partije Won"
+          scoreSuffix={`/ ${WIN_THRESHOLD} za pobjedu`}
+          wonLabel="Partije"
           wonCount={partijeWon1}
           accentColor="blue"
         />
         <TeamCard
           icon="🍷"
-          label="Team B"
+          label="Ekipa B"
           name={team2Name}
           onNameChange={onTeam2NameChange}
-          namePlaceholder="Them"
+          namePlaceholder="Oni"
           score={scoreTeam2}
-          scoreSuffix={`/ ${WIN_THRESHOLD} to Win`}
-          wonLabel="Partije Won"
+          scoreSuffix={`/ ${WIN_THRESHOLD} za pobjedu`}
+          wonLabel="Partije"
           wonCount={partijeWon2}
           accentColor="red"
         />
+        {banterJab && (
+          <BanterOverlay line={banterJab} onDismiss={() => setBanterJab(null)} accent={accent} />
+        )}
       </div>
 
       {/* CARD POINTS — full-width rows (not split across the two half-width
           cards) so each of the 5 buttons stays a comfortable tap target. */}
       <div className="bg-felt-panel/60 border border-rose-500/30 rounded-2xl p-3 space-y-2.5 shadow-inner">
         <span className="text-[10px] font-bold text-felt-ink-rose/80 uppercase tracking-wider font-mono block px-1">
-          Card Points
+          Bodovi karata
         </span>
         {[
           { team: 1, name: team1Name, nameCls: "text-blue-200", btnCls: "bg-blue-100 hover:bg-blue-200 text-blue-900 border-blue-300/60" },
@@ -323,7 +316,7 @@ export default function BriskulaBoard({
           when tallying a trick's worth of points at once. */}
       <div className="bg-gradient-to-b from-amber-50 to-amber-100/90 rounded-2xl p-3 border-2 border-amber-300/80 shadow-md space-y-2 text-slate-900">
         <div className="flex items-center justify-between text-[11px] font-bold text-amber-900 px-1">
-          <span className="flex items-center gap-1">✍️ Manual Points</span>
+          <span className="flex items-center gap-1">✍️ Ručni unos bodova</span>
         </div>
         <div className="flex items-center gap-2">
           <input
@@ -332,8 +325,8 @@ export default function BriskulaBoard({
             pattern="[0-9]*"
             value={manualPts}
             onChange={(e) => handleManualPtsChange(e.target.value)}
-            placeholder="Pts"
-            aria-label="Manual points to add"
+            placeholder="Bod."
+            aria-label="Ručni unos bodova"
             disabled={scoringLocked}
             className="w-16 bg-white border border-amber-300 rounded-xl px-3 py-2 text-base font-semibold text-slate-900 outline-none focus:border-amber-600 focus-visible:ring-2 focus-visible:ring-amber-400 focus-visible:ring-offset-1 shadow-inner disabled:opacity-50"
           />
@@ -361,14 +354,14 @@ export default function BriskulaBoard({
         <div className="flex items-center justify-between border-b border-amber-200/80 pb-2">
           <h2 className="text-xs font-bold text-slate-900 flex items-center gap-1.5 font-serif">
             <History size={14} className="text-amber-700" />
-            This Partija ({rounds.length})
+            Ova partija ({rounds.length})
           </h2>
           {rounds.length > 0 && (
             <button
               onClick={undoLastRound}
               className="min-h-11 px-2 text-xs text-amber-800 hover:text-amber-900 font-bold flex items-center gap-1"
             >
-              <RotateCcw size={12} /> Undo Last
+              <RotateCcw size={12} /> Poništi zadnje
             </button>
           )}
         </div>
@@ -376,9 +369,9 @@ export default function BriskulaBoard({
         {rounds.length === 0 ? (
           <div className="py-8 text-center text-slate-500 space-y-1">
             <ListOrdered size={24} className="mx-auto text-amber-800/40" />
-            <p className="text-xs italic font-serif">No card points recorded yet.</p>
+            <p className="text-xs italic font-serif">Još nema zabilježenih bodova.</p>
             <p className="text-[11px] text-slate-500">
-              Tap a card button above as points are won.
+              Dodirnite gumb karte iznad kako osvajate bodove.
             </p>
           </div>
         ) : (
@@ -399,8 +392,8 @@ export default function BriskulaBoard({
                 <button
                   onClick={() => removeRoundById(r.id)}
                   className="min-w-11 min-h-11 flex items-center justify-center text-slate-400 hover:text-red-600 transition"
-                  title="Delete entry"
-                  aria-label={`Delete entry ${rounds.length - index}`}
+                  title="Obriši unos"
+                  aria-label={`Obriši unos ${rounds.length - index}`}
                 >
                   <Trash2 size={15} />
                 </button>
@@ -429,7 +422,7 @@ export default function BriskulaBoard({
                 <span className="font-mono font-bold text-slate-900 text-[11px]">
                   {p.score1} - {p.score2}
                 </span>
-                <span className="font-bold text-amber-800 text-[11px]">{p.winner} won</span>
+                <span className="font-bold text-amber-800 text-[11px]">{p.winner} pobjeđuje</span>
               </div>
             ))}
           </div>
@@ -445,7 +438,7 @@ export default function BriskulaBoard({
           }}
           className={`w-full min-h-11 bg-transparent hover:bg-felt-panel/50 border rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 active:scale-95 transition uppercase tracking-wider ${accent.resetButton}`}
         >
-          <RefreshCw size={14} /> New Match
+          <RefreshCw size={14} /> Novi meč
         </button>
       </div>
 
@@ -463,9 +456,9 @@ export default function BriskulaBoard({
               <AlertTriangle size={24} />
             </div>
             <div>
-              <h3 className="font-bold text-base text-slate-900 font-serif">Start New Match?</h3>
+              <h3 className="font-bold text-base text-slate-900 font-serif">Započeti novi meč?</h3>
               <p className="text-xs text-slate-600 mt-1">
-                This will reset the current partija, partije won, and match history.
+                Ovo će poništiti trenutnu partiju, osvojene partije i povijest meča.
               </p>
             </div>
             <div className="flex items-center gap-2 pt-2">
@@ -473,13 +466,13 @@ export default function BriskulaBoard({
                 onClick={() => setShowConfirmModal(false)}
                 className={`flex-1 py-2.5 text-slate-800 font-bold rounded-xl text-xs active:scale-95 transition ${accent.confirmModalCancel}`}
               >
-                Cancel
+                Odustani
               </button>
               <button
                 onClick={() => resetMatch(true)}
                 className="flex-1 py-2.5 bg-red-700 hover:bg-red-800 text-white font-bold rounded-xl text-xs shadow-md shadow-red-900/20 active:scale-95 transition"
               >
-                Confirm
+                Potvrdi
               </button>
             </div>
           </div>
@@ -503,27 +496,27 @@ export default function BriskulaBoard({
               {matchResult.tied ? (
                 <>
                   <h2 className="text-xl font-black text-slate-900 font-serif tracking-wide">
-                    MATCH TIED 2-2
+                    MEČ NERIJEŠEN 2-2
                   </h2>
                   <p className="text-xs text-slate-600 mt-2">
-                    Play another partija to break the tie, or start a new match.
+                    Odigrajte još jednu partiju za rasplet, ili započnite novi meč.
                   </p>
                 </>
               ) : (
                 <>
                   <h2 className="text-xl font-black text-slate-900 font-serif tracking-wide">
-                    {matchResult.sweep ? "ČESALJ! SWEEP! 🎉" : "MATCH WON! 🎉"}
+                    {matchResult.sweep ? "ČESALJ! 🎉" : "MEČ DOBIVEN! 🎉"}
                   </h2>
                   <p className={`text-base font-bold mt-1 ${accent.winModalHeading}`}>
-                    {matchResult.matchWinner} wins the match!
+                    {matchResult.matchWinner} pobjeđuje meč!
                   </p>
                   <p className="text-xs text-slate-600 mt-2">
-                    Partije: <strong className="text-slate-900">{partijeWon1}</strong> to{" "}
+                    Partije: <strong className="text-slate-900">{partijeWon1}</strong> :{" "}
                     <strong className="text-slate-900">{partijeWon2}</strong>
                   </p>
                   {roastLine && (
-                    <p className={`text-xs italic text-orange-800/80 mt-2 border-t pt-2 ${accent.winModalDivider}`}>
-                      🔥 {roastLine}
+                    <p className={`text-base italic text-orange-800/80 mt-2 border-t pt-2 ${accent.winModalDivider}`}>
+                      {roastLine}
                     </p>
                   )}
                 </>
@@ -533,7 +526,7 @@ export default function BriskulaBoard({
               onClick={() => resetMatch(false)}
               className={`w-full py-3 bg-emerald-900 hover:bg-emerald-800 font-bold rounded-xl text-xs uppercase tracking-wider shadow-md border ${accent.winModalButtonBorder}`}
             >
-              Start New Match
+              Novi meč
             </button>
           </div>
         </div>

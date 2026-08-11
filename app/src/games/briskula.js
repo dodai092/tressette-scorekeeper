@@ -7,11 +7,11 @@ export const PARTIJE_PER_MATCH = 4;
 // buttons). `short` is the compact button label (narrow enough for a
 // mobile breakpoint); `name` is the full word used in history entries.
 export const CARD_POINTS = [
-  { name: "Ace", short: "A", value: 11 },
-  { name: "Three", short: "3", value: 10 },
-  { name: "King", short: "K", value: 4 },
-  { name: "Knight", short: "C", value: 3 },
-  { name: "Jack", short: "F", value: 2 },
+  { name: "As", short: "A", value: 11 },
+  { name: "Trica", short: "3", value: 10 },
+  { name: "Kralj", short: "K", value: 4 },
+  { name: "Konj", short: "C", value: 3 },
+  { name: "Fanat", short: "F", value: 2 },
 ];
 
 // ~35% of the 120-point pool, so the mid-game jab threshold means

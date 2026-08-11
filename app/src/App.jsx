@@ -1,5 +1,5 @@
-import { useState, useEffect, useRef } from "react";
-import { Volume2, VolumeX, Zap, Flame, Sun, Moon } from "lucide-react";
+import { useState, useEffect } from "react";
+import { Volume2, VolumeX, Flame, Sun, Moon } from "lucide-react";
 import { playSound } from "./sound.js";
 import { loadPersistedState, savePersistedState } from "./storage.js";
 import { MODE_ACCENTS } from "./modeAccents.js";
@@ -35,39 +35,6 @@ export default function App() {
   // Banter: lighthearted taunts for whoever's losing. Off = no jabs, no
   // roast (mirrors soundEnabled: a session preference, not persisted).
   const [banterEnabled, setBanterEnabled] = useState(true);
-
-  // Mobile Wake Lock toggle. The Wake Lock API only exists in secure
-  // contexts (https:// or localhost) — over plain http:// on a local
-  // network (e.g. testing on a phone via LAN IP) it's simply absent, so
-  // the button is disabled with an explanation instead of silently no-oping.
-  const [screenLocked, setScreenLocked] = useState(false);
-  const wakeLockRef = useRef(null);
-  const wakeLockSupported =
-    typeof navigator !== "undefined" && "wakeLock" in navigator;
-
-  const requestWakeLock = async () => {
-    try {
-      if ("wakeLock" in navigator) {
-        wakeLockRef.current = await navigator.wakeLock.request("screen");
-        setScreenLocked(true);
-      }
-    } catch (err) {
-      console.log("Wake Lock failed:", err);
-    }
-  };
-
-  const releaseWakeLock = () => {
-    if (wakeLockRef.current) {
-      wakeLockRef.current.release();
-      wakeLockRef.current = null;
-      setScreenLocked(false);
-    }
-  };
-
-  useEffect(() => {
-    requestWakeLock();
-    return () => releaseWakeLock();
-  }, []);
 
   useEffect(() => {
     // Debounced so typing a team name doesn't re-serialize the whole
@@ -130,7 +97,7 @@ export default function App() {
             </div>
           </div>
           <div>
-            <h1 className="font-bold text-base text-felt-ink tracking-wide font-serif leading-none flex items-center gap-1.5">
+            <h1 className="font-bold text-xl text-felt-ink tracking-wide font-serif leading-none flex items-center gap-1.5">
               Tressette
             </h1>
           </div>
@@ -148,8 +115,8 @@ export default function App() {
                 ? "bg-amber-500/20 border-amber-500/60 text-felt-ink"
                 : "bg-felt-panel border-felt-panel-border text-felt-ink-muted"
             }`}
-            title="Sound"
-            aria-label={soundEnabled ? "Mute sound" : "Unmute sound"}
+            title="Zvuk"
+            aria-label={soundEnabled ? "Isključi zvuk" : "Uključi zvuk"}
             aria-pressed={soundEnabled}
           >
             {soundEnabled ? (
@@ -157,34 +124,6 @@ export default function App() {
             ) : (
               <VolumeX size={16} />
             )}
-          </button>
-
-          <button
-            onClick={screenLocked ? releaseWakeLock : requestWakeLock}
-            disabled={!wakeLockSupported}
-            className={`min-w-11 min-h-11 rounded-full flex items-center justify-center border transition active:scale-95 disabled:opacity-40 disabled:active:scale-100 ${
-              screenLocked
-                ? "bg-amber-500/20 border-amber-500/60 text-felt-ink"
-                : "bg-felt-panel border-felt-panel-border text-felt-ink-muted"
-            }`}
-            title={
-              wakeLockSupported
-                ? undefined
-                : "Requires a secure (https) connection — will work once deployed"
-            }
-            aria-label={
-              wakeLockSupported
-                ? screenLocked
-                  ? "Turn off keep-screen-awake"
-                  : "Keep screen awake"
-                : "Keep screen awake (unavailable on this connection)"
-            }
-            aria-pressed={screenLocked}
-          >
-            <Zap
-              size={16}
-              className={screenLocked ? "fill-amber-400 text-amber-400" : ""}
-            />
           </button>
 
           <button
@@ -197,8 +136,8 @@ export default function App() {
                 ? "bg-amber-500/20 border-amber-500/60 text-felt-ink"
                 : "bg-felt-panel border-felt-panel-border text-felt-ink-muted"
             }`}
-            title="Banter (taunt the loser)"
-            aria-label={banterEnabled ? "Turn off banter" : "Turn on banter"}
+            title="Zafrkancija (peckanje gubitnika)"
+            aria-label={banterEnabled ? "Isključi zafrkanciju" : "Uključi zafrkanciju"}
             aria-pressed={banterEnabled}
           >
             <Flame size={16} className={banterEnabled ? "fill-amber-400" : ""} />
@@ -209,9 +148,13 @@ export default function App() {
               setTheme(theme === "dark" ? "light" : "dark");
               if (soundEnabled) playSound("tap");
             }}
-            className="min-w-11 min-h-11 rounded-full flex items-center justify-center border transition active:scale-95 bg-amber-500/20 border-amber-500/60 text-felt-ink"
-            title="Light / dark felt"
-            aria-label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
+            className={`min-w-11 min-h-11 rounded-full flex items-center justify-center border transition active:scale-95 ${
+              theme === "light"
+                ? "bg-amber-500/20 border-amber-500/60 text-felt-ink"
+                : "bg-felt-panel border-felt-panel-border text-felt-ink-muted"
+            }`}
+            title="Svijetli / tamni stol"
+            aria-label={theme === "dark" ? "Prebaci na svijetli način" : "Prebaci na tamni način"}
             aria-pressed={theme === "light"}
           >
             {theme === "dark" ? <Moon size={16} /> : <Sun size={16} className="fill-amber-400 text-amber-400" />}

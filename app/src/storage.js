@@ -24,8 +24,8 @@ export const DEFAULT_BRISKULA_STATE = {
 
 const DEFAULT_STATE = {
   activeMode: "treseta",
-  team1Name: "Us",
-  team2Name: "Them",
+  team1Name: "Mi",
+  team2Name: "Oni",
   treseta: DEFAULT_TRESETA_STATE,
   briskula: DEFAULT_BRISKULA_STATE,
 };

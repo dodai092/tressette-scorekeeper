@@ -9,8 +9,9 @@ import {
   Trash2,
 } from "lucide-react";
 import { playSound } from "../sound.js";
-import { LOSING_JABS, ROAST_LINES, pickRandom } from "../banter.js";
+import { BANTER_LINES, pickRandom } from "../banter.js";
 import TeamCard from "../components/TeamCard.jsx";
+import BanterOverlay from "../components/BanterOverlay.jsx";
 import { MODE_ACCENTS } from "../modeAccents.js";
 import {
   TARGET_SCORE_OPTIONS,
@@ -58,8 +59,7 @@ export default function TresetaBoard({
       const isTie = bothOverTarget && updated1 === updated2;
       setTieNotice(isTie);
       if (banterEnabled && !isTie && gap >= gapThreshold) {
-        const loserName = updated1 < updated2 ? team1Name : team2Name;
-        setBanterJab(pickRandom(LOSING_JABS, loserName, gap));
+        setBanterJab(pickRandom(BANTER_LINES));
       } else {
         setBanterJab(null);
       }
@@ -69,8 +69,7 @@ export default function TresetaBoard({
     setTieNotice(false);
     setBanterJab(null);
     if (banterEnabled) {
-      const loserName = winner === team1Name ? team2Name : team1Name;
-      setRoastLine(pickRandom(ROAST_LINES, loserName, gap));
+      setRoastLine(pickRandom(BANTER_LINES));
     } else {
       setRoastLine(null);
     }
@@ -200,7 +199,7 @@ export default function TresetaBoard({
                 : "hover:text-felt-ink"
             }`}
           >
-            <span>🏆 Goal {pts} pt</span>
+            <span>🏆 Cilj {pts} b</span>
           </button>
         ))}
       </div>
@@ -210,30 +209,21 @@ export default function TresetaBoard({
           className="motion-slide-fade-in bg-amber-500/20 border border-amber-500/60 text-felt-ink text-xs font-semibold rounded-xl px-3 py-2 text-center"
           style={{ animation: "slide-fade-in 260ms cubic-bezier(0.16, 1, 0.3, 1)" }}
         >
-          Tied at {scoreTeam1} — keep playing until someone's ahead.
-        </div>
-      )}
-
-      {banterJab && (
-        <div
-          className="motion-slide-fade-in bg-orange-500/15 border border-orange-500/40 text-felt-banter-ink text-xs font-semibold rounded-xl px-3 py-2 text-center italic"
-          style={{ animation: "slide-fade-in 260ms cubic-bezier(0.16, 1, 0.3, 1)" }}
-        >
-          🔥 {banterJab}
+          Neriješeno na {scoreTeam1} — igrajte dalje dok netko ne povede.
         </div>
       )}
 
       {/* TEAM 1 & TEAM 2 PARCHMENT CARDS */}
-      <div className="grid grid-cols-2 gap-3">
+      <div className="relative grid grid-cols-2 gap-3">
         <TeamCard
           icon="⚔️"
-          label="Team A"
+          label="Ekipa A"
           name={team1Name}
           onNameChange={onTeam1NameChange}
-          namePlaceholder="Us"
+          namePlaceholder="Mi"
           score={scoreTeam1}
-          scoreSuffix={`/ ${targetScore} Points`}
-          wonLabel="Games Won"
+          scoreSuffix={`/ ${targetScore} bodova`}
+          wonLabel="Pobjede"
           wonCount={gamesWon1}
           accentColor="blue"
           onQuickAdd={(pts) => addQuickPoints(1, pts)}
@@ -245,13 +235,13 @@ export default function TresetaBoard({
         />
         <TeamCard
           icon="🍷"
-          label="Team B"
+          label="Ekipa B"
           name={team2Name}
           onNameChange={onTeam2NameChange}
-          namePlaceholder="Them"
+          namePlaceholder="Oni"
           score={scoreTeam2}
-          scoreSuffix={`/ ${targetScore} Points`}
-          wonLabel="Games Won"
+          scoreSuffix={`/ ${targetScore} bodova`}
+          wonLabel="Pobjede"
           wonCount={gamesWon2}
           accentColor="red"
           onQuickAdd={(pts) => addQuickPoints(2, pts)}
@@ -261,15 +251,18 @@ export default function TresetaBoard({
           ]}
           quickAddHeading="Akuže:"
         />
+        {banterJab && (
+          <BanterOverlay line={banterJab} onDismiss={() => setBanterJab(null)} accent={accent} />
+        )}
       </div>
 
       {/* CUSTOM HAND SCORE ENTRY BOX (HAND_CAP-Point Total Bound) */}
       <div className="bg-gradient-to-b from-amber-50 to-amber-100/90 rounded-2xl p-3 border-2 border-amber-300/80 shadow-md space-y-2 text-slate-900">
         <div className="flex items-center justify-between text-[11px] font-bold text-amber-900 px-1">
           <span className="flex items-center gap-1">
-            🎴 Record Hand Score
+            🎴 Unesi rezultat ruke
           </span>
-          <span className="text-emerald-800 font-mono">Total = {HAND_CAP} pt</span>
+          <span className="text-emerald-800 font-mono">Ukupno = {HAND_CAP} b</span>
         </div>
 
         <form onSubmit={handleCustomSubmit} className="flex items-center gap-2">
@@ -280,8 +273,8 @@ export default function TresetaBoard({
               pattern="[0-9]*"
               value={customPts1}
               onChange={(e) => handlePts1Change(e.target.value)}
-              placeholder={`${team1Name} pts (0-${HAND_CAP})`}
-              aria-label={`${team1Name} hand points, 0 to ${HAND_CAP}`}
+              placeholder={`${team1Name} bod. (0-${HAND_CAP})`}
+              aria-label={`${team1Name} bodovi ruke, 0 do ${HAND_CAP}`}
               className="w-full bg-white border border-amber-300 rounded-xl px-3 py-2 text-base font-semibold text-slate-900 outline-none focus:border-amber-600 focus-visible:ring-2 focus-visible:ring-amber-400 focus-visible:ring-offset-1 shadow-inner"
             />
           </div>
@@ -295,7 +288,7 @@ export default function TresetaBoard({
             type="submit"
             className="min-h-11 px-4 bg-emerald-900 hover:bg-emerald-800 text-amber-200 font-bold text-xs rounded-xl active:scale-95 transition shrink-0 border border-amber-500/40 shadow-sm"
           >
-            Add
+            Dodaj
           </button>
         </form>
       </div>
@@ -305,14 +298,14 @@ export default function TresetaBoard({
         <div className="flex items-center justify-between border-b border-amber-200/80 pb-2">
           <h2 className="text-xs font-bold text-slate-900 flex items-center gap-1.5 font-serif">
             <History size={14} className="text-amber-700" />
-            Game Hand History ({rounds.length})
+            Povijest ruku ({rounds.length})
           </h2>
           {rounds.length > 0 && (
             <button
               onClick={undoLastRound}
               className="min-h-11 px-2 text-xs text-amber-800 hover:text-amber-900 font-bold flex items-center gap-1"
             >
-              <RotateCcw size={12} /> Undo Last
+              <RotateCcw size={12} /> Poništi zadnje
             </button>
           )}
         </div>
@@ -320,18 +313,18 @@ export default function TresetaBoard({
         {rounds.length === 0 ? (
           <div className="py-8 text-center text-slate-500 space-y-1">
             <ListOrdered size={24} className="mx-auto text-amber-800/40" />
-            <p className="text-xs italic font-serif">No hands recorded yet.</p>
+            <p className="text-xs italic font-serif">Još nema zabilježenih ruku.</p>
             <p className="text-[11px] text-slate-500">
-              Use quick buttons or enter scores above.
+              Koristite brze gumbe ili unesite rezultat iznad.
             </p>
           </div>
         ) : (
           <div className="space-y-2 max-h-80 overflow-y-auto pr-1">
             <div className="grid grid-cols-12 text-[10px] font-bold uppercase text-slate-500 border-b border-amber-200/60 pb-1 px-2 font-mono">
-              <span className="col-span-2">Hand</span>
+              <span className="col-span-2">Ruka</span>
               <span className="col-span-3 text-blue-900 truncate">{team1Name}</span>
               <span className="col-span-3 text-red-900 truncate">{team2Name}</span>
-              <span className="col-span-2 text-right">Total</span>
+              <span className="col-span-2 text-right">Ukupno</span>
               <span className="col-span-2"></span>
             </div>
 
@@ -353,8 +346,8 @@ export default function TresetaBoard({
                   <button
                     onClick={() => removeRoundById(r.id)}
                     className="min-w-11 min-h-11 flex items-center justify-center text-slate-400 hover:text-red-600 transition"
-                    title="Delete hand"
-                    aria-label={`Delete hand ${rounds.length - index}`}
+                    title="Obriši ruku"
+                    aria-label={`Obriši ruku ${rounds.length - index}`}
                   >
                     <Trash2 size={15} />
                   </button>
@@ -374,7 +367,7 @@ export default function TresetaBoard({
           }}
           className={`w-full min-h-11 bg-transparent hover:bg-felt-panel/50 border rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 active:scale-95 transition uppercase tracking-wider ${accent.resetButton}`}
         >
-          <RefreshCw size={14} /> New Game
+          <RefreshCw size={14} /> Nova igra
         </button>
       </div>
 
@@ -392,9 +385,9 @@ export default function TresetaBoard({
               <AlertTriangle size={24} />
             </div>
             <div>
-              <h3 className="font-bold text-base text-slate-900 font-serif">Start New Game?</h3>
+              <h3 className="font-bold text-base text-slate-900 font-serif">Započeti novu igru?</h3>
               <p className="text-xs text-slate-600 mt-1">
-                This will reset scores and hand history for the current game.
+                Ovo će poništiti rezultate i povijest ruku za trenutnu igru.
               </p>
             </div>
             <div className="flex items-center gap-2 pt-2">
@@ -402,13 +395,13 @@ export default function TresetaBoard({
                 onClick={() => setShowConfirmModal(false)}
                 className="flex-1 py-2.5 bg-amber-200/80 hover:bg-amber-200 text-slate-800 font-bold rounded-xl text-xs active:scale-95 transition"
               >
-                Cancel
+                Odustani
               </button>
               <button
                 onClick={() => resetGame(true)}
                 className="flex-1 py-2.5 bg-red-700 hover:bg-red-800 text-white font-bold rounded-xl text-xs shadow-md shadow-red-900/20 active:scale-95 transition"
               >
-                Confirm
+                Potvrdi
               </button>
             </div>
           </div>
@@ -430,16 +423,16 @@ export default function TresetaBoard({
             </div>
             <div>
               <h2 className="text-xl font-black text-slate-900 font-serif tracking-wide">
-                VICTORY! 🎉
+                POBJEDA! 🎉
               </h2>
-              <p className="text-base font-bold text-amber-900 mt-1">{winnerTeam} wins!</p>
+              <p className="text-base font-bold text-amber-900 mt-1">{winnerTeam} pobjeđuje!</p>
               <p className="text-xs text-slate-600 mt-2">
-                Final score: <strong className="text-slate-900">{scoreTeam1}</strong> to{" "}
-                <strong className="text-slate-900">{scoreTeam2}</strong> (Goal {targetScore} pt)
+                Konačni rezultat: <strong className="text-slate-900">{scoreTeam1}</strong> :{" "}
+                <strong className="text-slate-900">{scoreTeam2}</strong> (Cilj {targetScore} b)
               </p>
               {roastLine && (
-                <p className="text-xs italic text-orange-800/80 mt-2 border-t border-amber-300/60 pt-2">
-                  🔥 {roastLine}
+                <p className="text-base italic text-orange-800/80 mt-2 border-t border-amber-300/60 pt-2">
+                  {roastLine}
                 </p>
               )}
             </div>
@@ -447,7 +440,7 @@ export default function TresetaBoard({
               onClick={() => resetGame(false)}
               className="w-full py-3 bg-emerald-900 hover:bg-emerald-800 text-amber-200 font-bold rounded-xl text-xs uppercase tracking-wider shadow-md border border-amber-500/40"
             >
-              Start New Game
+              Nova igra
             </button>
           </div>
         </div>
