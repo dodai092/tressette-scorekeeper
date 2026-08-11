@@ -1,0 +1,9 @@
+node_modules
+dist
+dist-ssr
+*.local
+.DS_Store
+
+# Local tooling / session artifacts — not part of the app
+.claude
+.playwright-mcp
