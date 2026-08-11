@@ -46,6 +46,7 @@ export default function TresetaBoard({
   const [banterJab, setBanterJab] = useState(null);
   const [roastLine, setRoastLine] = useState(null);
   const [lastBanterLine, setLastBanterLine] = useState(null);
+  const [jabShown, setJabShown] = useState({ team1: false, team2: false });
 
   const [showConfirmModal, setShowConfirmModal] = useState(false);
 
@@ -59,11 +60,13 @@ export default function TresetaBoard({
       const bothOverTarget = updated1 >= targetOverride && updated2 >= targetOverride;
       const isTie = bothOverTarget && updated1 === updated2;
       setTieNotice(isTie);
-      if (banterEnabled && !isTie && gap >= gapThreshold) {
+      const loserKey = updated1 < updated2 ? "team1" : "team2";
+      if (banterEnabled && !isTie && gap >= gapThreshold && !jabShown[loserKey]) {
         const line = pickRandom(BANTER_LINES, lastBanterLine);
         setBanterJab(line);
         setLastBanterLine(line);
-      } else {
+        setJabShown((prev) => ({ ...prev, [loserKey]: true }));
+      } else if (!banterJab) {
         setBanterJab(null);
       }
       return;
@@ -178,6 +181,7 @@ export default function TresetaBoard({
     setShowWinnerModal(false);
     setBanterJab(null);
     setRoastLine(null);
+    setJabShown({ team1: false, team2: false });
     if (fullReset) {
       setShowConfirmModal(false);
       setTieNotice(false);

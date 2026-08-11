@@ -51,6 +51,7 @@ export default function BriskulaBoard({
   const [banterJab, setBanterJab] = useState(null);
   const [roastLine, setRoastLine] = useState(null);
   const [lastBanterLine, setLastBanterLine] = useState(null);
+  const [jabShown, setJabShown] = useState({ team1: false, team2: false });
 
   const [partijaCompleteInfo, setPartijaCompleteInfo] = useState(null);
   const [showMatchWinnerModal, setShowMatchWinnerModal] = useState(false);
@@ -68,11 +69,13 @@ export default function BriskulaBoard({
       const total = updated1 + updated2;
       const isTie = total >= PARTIJA_POOL && updated1 === updated2;
       setPartijaTieNotice(isTie);
-      if (banterEnabled && !isTie && gap >= BANTER_GAP_THRESHOLD) {
+      const loserKey = updated1 < updated2 ? "team1" : "team2";
+      if (banterEnabled && !isTie && gap >= BANTER_GAP_THRESHOLD && !jabShown[loserKey]) {
         const line = pickRandom(BANTER_LINES, lastBanterLine);
         setBanterJab(line);
         setLastBanterLine(line);
-      } else {
+        setJabShown((prev) => ({ ...prev, [loserKey]: true }));
+      } else if (!banterJab) {
         setBanterJab(null);
       }
       return;
@@ -180,12 +183,14 @@ export default function BriskulaBoard({
     if (soundEnabled) playSound("tap");
     onUpdate({ scoreTeam1: 0, scoreTeam2: 0, rounds: [], currentPartija: currentPartija + 1 });
     setPartijaCompleteInfo(null);
+    setJabShown({ team1: false, team2: false });
   };
 
   const replayTiedPartija = () => {
     if (soundEnabled) playSound("tap");
     onUpdate({ scoreTeam1: 0, scoreTeam2: 0, rounds: [] });
     setPartijaTieNotice(false);
+    setJabShown({ team1: false, team2: false });
   };
 
   // Resets the whole match: partije won, current partija, and completed
@@ -205,6 +210,7 @@ export default function BriskulaBoard({
     setPartijaCompleteInfo(null);
     setBanterJab(null);
     setRoastLine(null);
+    setJabShown({ team1: false, team2: false });
     setMatchResult(null);
     if (fullReset) {
       setShowConfirmModal(false);
