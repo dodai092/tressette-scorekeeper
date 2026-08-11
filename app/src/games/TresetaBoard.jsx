@@ -272,11 +272,9 @@ export default function TresetaBoard({
         <form onSubmit={handleCustomSubmit} className="flex items-center gap-2">
           <div className="flex-1 min-w-0">
             <input
-              type="number"
+              type="text"
               inputMode="numeric"
               pattern="[0-9]*"
-              min="0"
-              max={HAND_CAP}
               value={customPts1}
               onChange={(e) => handlePts1Change(e.target.value)}
               placeholder={`${team1Name} pts (0-${HAND_CAP})`}
