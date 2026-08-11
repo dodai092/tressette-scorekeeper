@@ -270,7 +270,7 @@ export default function TresetaBoard({
         </div>
 
         <form onSubmit={handleCustomSubmit} className="flex items-center gap-2">
-          <div className="flex-1">
+          <div className="flex-1 min-w-0">
             <input
               type="number"
               min="0"
@@ -278,7 +278,8 @@ export default function TresetaBoard({
               value={customPts1}
               onChange={(e) => handlePts1Change(e.target.value)}
               placeholder={`${team1Name} pts (0-${HAND_CAP})`}
-              className="w-full bg-white border border-amber-300 rounded-xl px-3 py-2 text-base font-semibold text-slate-900 outline-none focus:border-amber-600 shadow-inner"
+              aria-label={`${team1Name} hand points, 0 to ${HAND_CAP}`}
+              className="w-full bg-white border border-amber-300 rounded-xl px-3 py-2 text-base font-semibold text-slate-900 outline-none focus:border-amber-600 focus-visible:ring-2 focus-visible:ring-amber-400 focus-visible:ring-offset-1 shadow-inner"
             />
           </div>
 
@@ -299,10 +300,10 @@ export default function TresetaBoard({
       {/* SCORE HISTORY SECTION */}
       <div className="bg-gradient-to-b from-amber-50 to-amber-100/90 rounded-3xl p-4 border-2 border-amber-300/80 shadow-xl space-y-3 text-slate-900">
         <div className="flex items-center justify-between border-b border-amber-200/80 pb-2">
-          <span className="text-xs font-bold text-slate-900 flex items-center gap-1.5 font-serif">
+          <h2 className="text-xs font-bold text-slate-900 flex items-center gap-1.5 font-serif">
             <History size={14} className="text-amber-700" />
             Game Hand History ({rounds.length})
-          </span>
+          </h2>
           {rounds.length > 0 && (
             <button
               onClick={undoLastRound}

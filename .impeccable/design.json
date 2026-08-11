@@ -1,0 +1,114 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-08-11T00:00:00Z",
+  "title": "Design System: Tressette Scorekeeper",
+  "extensions": {
+    "colorMeta": {
+      "deep-felt": { "role": "neutral", "displayName": "Deep Felt", "canonical": "#022c22", "tonalRamp": ["#022c22", "#065f46", "#047857", "#059669", "#10b981", "#34d399", "#6ee7b7", "#a7f3d0"] },
+      "felt-panel": { "role": "neutral", "displayName": "Felt Panel", "canonical": "#064e3b", "tonalRamp": ["#022c22", "#065f46", "#047857", "#059669", "#10b981", "#34d399", "#6ee7b7", "#a7f3d0"] },
+      "gold-leaf": { "role": "primary", "displayName": "Gold Leaf", "canonical": "#f59e0b", "tonalRamp": ["#78350f", "#92400e", "#b45309", "#d97706", "#f59e0b", "#fbbf24", "#fcd34d", "#fde68a"] },
+      "gold-leaf-bright": { "role": "primary", "displayName": "Gold Leaf Bright", "canonical": "#eab308", "tonalRamp": ["#713f12", "#854d0e", "#a16207", "#ca8a04", "#eab308", "#facc15", "#fde047", "#fef08a"] },
+      "garnet": { "role": "secondary", "displayName": "Garnet", "canonical": "#e11d48", "tonalRamp": ["#881337", "#9f1239", "#be123c", "#e11d48", "#f43f5e", "#fb7185", "#fda4af", "#fecdd3"] },
+      "parchment": { "role": "neutral", "displayName": "Parchment", "canonical": "#fffbeb", "tonalRamp": ["#92400e", "#b45309", "#d97706", "#f59e0b", "#fbbf24", "#fcd34d", "#fde68a", "#fef3c7"] },
+      "team-harbor-blue": { "role": "neutral", "displayName": "Harbor Blue", "canonical": "#1e3a8a", "tonalRamp": ["#1e3a8a", "#1e40af", "#1d4ed8", "#2563eb", "#3b82f6", "#60a5fa", "#93c5fd", "#bfdbfe"] },
+      "team-crimson": { "role": "neutral", "displayName": "Team Crimson", "canonical": "#7f1d1d", "tonalRamp": ["#7f1d1d", "#991b1b", "#b91c1c", "#dc2626", "#ef4444", "#f87171", "#fca5a5", "#fecaca"] },
+      "ember": { "role": "tertiary", "displayName": "Ember", "canonical": "#f97316", "tonalRamp": ["#7c2d12", "#9a3412", "#c2410c", "#ea580c", "#f97316", "#fb923c", "#fdba74", "#fed7aa"] },
+      "ink": { "role": "neutral", "displayName": "Ink", "canonical": "#0f172a", "tonalRamp": ["#020617", "#0f172a", "#1e293b", "#334155", "#475569", "#64748b", "#94a3b8", "#cbd5e1"] }
+    },
+    "typographyMeta": {
+      "display": { "displayName": "Display Serif", "purpose": "Live score numbers only — the single most important number on any given card." },
+      "title": { "displayName": "Title Serif", "purpose": "App header title and modal headlines (win/sweep/tie announcements)." },
+      "body": { "displayName": "Body Sans", "purpose": "Button labels, banner copy, form placeholders — the working size for interactive UI text." },
+      "label": { "displayName": "Label Mono", "purpose": "Uppercase section headings, hand/partija indices, timestamps, tabular history rows." }
+    },
+    "shadows": [
+      { "name": "card-elevation", "value": "0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1)", "purpose": "Scorecards and main content panels sitting above the felt." },
+      { "name": "modal-elevation", "value": "0 25px 50px -12px rgb(0 0 0 / 0.25)", "purpose": "Confirm dialogs and winner/sweep modals — top of the stack." },
+      { "name": "button-lift", "value": "0 1px 2px 0 rgb(0 0 0 / 0.05)", "purpose": "Quick-add and primary action buttons; confirms tappability without competing with card elevation." },
+      { "name": "recessed", "value": "inset 0 2px 4px 0 rgb(0 0 0 / 0.05)", "purpose": "Segmented controls and text inputs — reads as a groove, not a raised chip." },
+      { "name": "accent-glow-gold", "value": "0 10px 15px -3px rgb(245 158 11 / 0.3)", "purpose": "Circular icon badges and trophy icon when Trešeta mode is active." },
+      { "name": "accent-glow-garnet", "value": "0 10px 15px -3px rgb(244 63 94 / 0.3)", "purpose": "Circular icon badges and trophy/sweep icon when Briškula mode is active." }
+    ],
+    "motion": [
+      { "name": "score-pop", "value": "320ms cubic-bezier(0.16, 1, 0.3, 1)", "purpose": "Score number scales 1 → 1.12 → 1 on every change, keyed by the score value." },
+      { "name": "modal-in", "value": "320ms cubic-bezier(0.16, 1, 0.3, 1)", "purpose": "Modal scale 0.94→1 + translateY 8px→0 on entrance, always paired with fade-in." },
+      { "name": "fade-in", "value": "180ms ease-out", "purpose": "Modal backdrop opacity 0→1, always paired with modal-in." },
+      { "name": "slide-fade-in", "value": "260ms cubic-bezier(0.16, 1, 0.3, 1)", "purpose": "Notice banners (tie, banter jab, partija complete) sliding in from -6px translateY." }
+    ],
+    "breakpoints": []
+  },
+  "components": [
+    {
+      "name": "Primary Button (Gold Leaf)",
+      "kind": "button",
+      "refersTo": "button-primary-treseta",
+      "description": "Trešeta-mode primary action, e.g. the active target-score segment.",
+      "html": "<button class=\"ds-btn-gold\">🏆 Goal 41 pt</button>",
+      "css": ".ds-btn-gold { background: linear-gradient(to right, #f59e0b, #eab308); color: #0f172a; font-weight: 700; border-radius: 12px; padding: 6px 12px; border: none; box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05); transition: transform 0.15s; } .ds-btn-gold:hover { filter: brightness(1.05); } .ds-btn-gold:active { transform: scale(0.95); } .ds-btn-gold:focus-visible { outline: 2px solid #fde68a; outline-offset: 2px; }"
+    },
+    {
+      "name": "Primary Button (Garnet)",
+      "kind": "button",
+      "refersTo": "button-primary-briskula",
+      "description": "Briškula-mode primary action, e.g. \"Start Next Partija\".",
+      "html": "<button class=\"ds-btn-garnet\">Start Next Partija</button>",
+      "css": ".ds-btn-garnet { background: #e11d48; color: #ffffff; font-weight: 700; border-radius: 12px; padding: 10px 16px; width: 100%; border: none; transition: transform 0.15s, background 0.15s; } .ds-btn-garnet:hover { background: #fb7185; } .ds-btn-garnet:active { transform: scale(0.95); } .ds-btn-garnet:focus-visible { outline: 2px solid #fda4af; outline-offset: 2px; }"
+    },
+    {
+      "name": "Quick Add Button",
+      "kind": "button",
+      "refersTo": "button-quick-add",
+      "description": "Team-tinted point-entry button (Akuže declarations / card points); tint follows the player's team color, never the mode accent.",
+      "html": "<button class=\"ds-btn-quickadd\">+4</button>",
+      "css": ".ds-btn-quickadd { flex: 1; min-height: 44px; background: #dbeafe; color: #1e3a8a; font-weight: 700; font-size: 12px; border-radius: 12px; border: 1px solid rgb(147 197 253 / 0.6); box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05); transition: transform 0.15s; } .ds-btn-quickadd:hover { background: #bfdbfe; } .ds-btn-quickadd:active { transform: scale(0.95); }"
+    },
+    {
+      "name": "Scorecard (TeamCard)",
+      "kind": "card",
+      "refersTo": "card-scorecard",
+      "description": "Parchment card holding a team's live score, target/win suffix, games/partije won, and quick-add row.",
+      "html": "<div class=\"ds-card-scorecard\"><div class=\"ds-card-label\">⚔️ TEAM A</div><div class=\"ds-card-score\">44</div><div class=\"ds-card-suffix\">/ 41 Points</div></div>",
+      "css": ".ds-card-scorecard { background: linear-gradient(to bottom, #fffbeb, rgb(254 243 199 / 0.9)); border: 2px solid rgb(252 211 77 / 0.8); border-radius: 24px; padding: 16px; box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1); color: #0f172a; } .ds-card-label { font-family: ui-monospace, monospace; font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #1e40af; } .ds-card-score { font-family: ui-serif, Georgia, serif; font-weight: 900; font-size: 48px; line-height: 1; color: #020617; } .ds-card-suffix { font-family: ui-monospace, monospace; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: rgb(146 64 14 / 0.7); }"
+    },
+    {
+      "name": "Winner Modal (Garnet)",
+      "kind": "custom",
+      "refersTo": "modal-surface",
+      "description": "Briškula match-won / sweep modal: gradient parchment surface, garnet border, circular accent-glow icon badge.",
+      "html": "<div class=\"ds-modal-garnet\"><div class=\"ds-modal-icon\">🏆</div><h2 class=\"ds-modal-title\">MATCH WON! 🎉</h2><p class=\"ds-modal-sub\">Us wins the match!</p></div>",
+      "css": ".ds-modal-garnet { background: linear-gradient(to bottom, #fffbeb, #fef3c7); border: 2px solid #fb7185; border-radius: 24px; padding: 24px; box-shadow: 0 25px 50px -12px rgb(0 0 0 / 0.25); text-align: center; color: #0f172a; } .ds-modal-icon { width: 64px; height: 64px; margin: 0 auto 12px; border-radius: 9999px; background: linear-gradient(to top right, #e11d48, #fb7185); color: #ffffff; display: flex; align-items: center; justify-content: center; font-size: 28px; box-shadow: 0 10px 15px -3px rgb(244 63 94 / 0.3); } .ds-modal-title { font-family: ui-serif, Georgia, serif; font-weight: 900; font-size: 20px; letter-spacing: 0.02em; } .ds-modal-sub { font-family: ui-serif, Georgia, serif; font-weight: 700; color: #9f1239; margin-top: 4px; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Felt Table at Night",
+    "overview": "The whole system reads as one physical object: a card table lit from above in a dim room. The base is a near-black emerald felt that recedes into shadow at the edges — never a flat, evenly-lit app background. Every interactive surface traces itself in warm metal or stone: Gold Leaf for Trešeta, Garnet for Briškula, both inlaid rather than painted on, both catching light the way real trim does. The scorecards themselves aren't UI panels — they're parchment dealt face-up onto the felt, cream and slightly warm, holding the actual numbers in heavy serif type like ink on paper.\n\nTwo games share one table. Trešeta and Briškula never repaint the felt or the parchment — they only swap which metal is inlaid into the trim, so switching modes feels like the dealer changing the game, not the app changing skins. Team identity (blue vs. crimson) is separate from mode identity again: it belongs to the players sitting at the table, not to which game they're playing, so it never changes when the mode switch is tapped.\n\nNothing here is flat-app-default. There is no white background, no system sans-serif headline, no drop-shadow-free card. The felt is dark, the trim is warm and directional, and the parchment holds a real shadow like it's sitting slightly above the table.",
+    "keyCharacteristics": [
+      "Near-black emerald felt base, never a light or neutral-gray background",
+      "One warm metallic/stone accent per game mode (Gold Leaf / Garnet), used for trim, active states, and primary actions — never for both modes' UI at once",
+      "Parchment-cream scorecards and modals, warm and slightly aged, not stark white",
+      "Heavy serif display type for anything that's \"the number\" (scores, headlines); monospace for anything tabular (history rows, timestamps, running totals)",
+      "Every tap gives tactile feedback (active:scale-95); every elevated surface casts a real, often colored, shadow"
+    ],
+    "rules": [
+      { "name": "The One Metal Rule", "body": "Only one mode accent (Gold Leaf or Garnet) is active on screen at a time, and it's whichever mode is currently selected. Never blend or alternate them within one board.", "section": "colors" },
+      { "name": "The Team-Stays-Put Rule", "body": "Team A/Team B colors (Harbor Blue / Team Crimson) never change when the mode switches — they identify the player, not the game.", "section": "colors" },
+      { "name": "The Printed-Number Rule", "body": "Any number that represents \"the score\" is always the serif Display style, never mono or sans. Mono is for counting/indexing, not for the score itself.", "section": "typography" },
+      { "name": "The Lit-From-Above Rule", "body": "Shadows are always warm/colored when they sit under an accent element (icons, trophy circles) and neutral only for plain parchment surfaces.", "section": "elevation" }
+    ],
+    "dos": [
+      "Do keep the felt (deep-felt/felt-panel) and parchment (parchment/parchment-deep) pairing as the base of every screen — dark base, warm-light content surfaces.",
+      "Do use Gold Leaf for all Trešeta-mode chrome and Garnet for all Briškula-mode chrome, consistently across the mode switcher, progress indicators, primary buttons, and win modals.",
+      "Do keep Team A/Team B (Harbor Blue/Team Crimson) fixed regardless of active mode.",
+      "Do give every elevated surface a real, often colored, shadow — this system has no flat cards.",
+      "Do use the serif Display style for score numbers specifically, never for arbitrary large text.",
+      "Do add active:scale-95 to every tappable control."
+    ],
+    "donts": [
+      "Don't introduce a third mode-accent color; the system is built for exactly two games sharing one felt/parchment base.",
+      "Don't use Garnet or Gold Leaf for team identity, or Harbor Blue/Team Crimson for mode identity — those two axes must stay independent.",
+      "Don't flatten cards or modals to a borderless, shadowless surface — it breaks the \"dealt onto the table\" read.",
+      "Don't introduce a webfont; the serif/sans/mono system stack is deliberate.",
+      "Don't use pure white or pure black surfaces; even \"white\" rows inside history lists are white/80 over parchment, never opaque white."
+    ]
+  }
+}

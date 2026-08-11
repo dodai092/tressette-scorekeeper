@@ -5,6 +5,7 @@ const TEAM_ACCENTS = {
     label: "text-blue-800",
     text: "text-blue-900",
     border: "border-blue-200 focus:border-blue-600",
+    ring: "focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:ring-offset-1",
     gamesWon: "text-blue-900",
     quickBtn: "bg-blue-100 hover:bg-blue-200 text-blue-900 border-blue-300/60",
   },
@@ -12,6 +13,7 @@ const TEAM_ACCENTS = {
     label: "text-red-800",
     text: "text-red-900",
     border: "border-red-200 focus:border-red-600",
+    ring: "focus-visible:ring-2 focus-visible:ring-red-400 focus-visible:ring-offset-1",
     gamesWon: "text-red-900",
     quickBtn: "bg-red-100 hover:bg-red-200 text-red-900 border-red-300/60",
   },
@@ -56,7 +58,7 @@ export default function TeamCard({
               type="text"
               value={name}
               onChange={(e) => onNameChange(e.target.value)}
-              className={`bg-transparent font-black text-base ${accent.text} tracking-tight w-full outline-none border-b border-dashed ${accent.border} py-0.5 pr-5 font-serif`}
+              className={`bg-transparent font-black text-base ${accent.text} tracking-tight w-full outline-none border-b border-dashed ${accent.border} ${accent.ring} rounded-sm py-0.5 pr-5 font-serif`}
               placeholder={namePlaceholder}
               aria-label={`${label} name`}
             />
