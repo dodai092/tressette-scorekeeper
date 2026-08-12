@@ -6,6 +6,8 @@ import { MODE_ACCENTS } from "./modeAccents.js";
 import TresetaBoard from "./games/TresetaBoard.jsx";
 import BriskulaBoard from "./games/BriskulaBoard.jsx";
 
+const CONTENT_RAIL_CLASS = "w-full max-w-md md:max-w-2xl mx-auto";
+
 export default function App() {
   const persisted = loadPersistedState();
 
@@ -89,7 +91,7 @@ export default function App() {
       <div className="absolute inset-0 bg-[radial-gradient(#15803d_1px,transparent_1px)] [background-size:16px_16px] opacity-20 pointer-events-none"></div>
 
       {/* Card Table Header */}
-      <header className="sticky top-0 z-30 bg-felt-panel/90 backdrop-blur-md border-b border-amber-600/30 px-4 py-3 flex flex-wrap items-center gap-y-2 shadow-lg">
+      <header className={`${CONTENT_RAIL_CLASS} sticky top-0 z-30 bg-felt-panel/90 backdrop-blur-md border-b border-amber-600/30 px-4 py-3 flex flex-wrap items-center gap-y-2 shadow-lg`}>
         <div className="flex items-center space-x-2.5">
           <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-amber-600 via-amber-500 to-yellow-400 p-0.5 shadow-md shadow-amber-900/50">
             <div className="w-full h-full bg-felt rounded-[10px] flex items-center justify-center">
@@ -163,7 +165,7 @@ export default function App() {
       </header>
 
       {/* Main Content Area */}
-      <main className="flex-1 max-w-md mx-auto w-full px-4 py-4 flex flex-col space-y-4 z-10 font-sans">
+      <main className={`${CONTENT_RAIL_CLASS} flex-1 px-4 py-4 flex flex-col space-y-4 z-10 font-sans`}>
         {/* Game Mode Switcher */}
         <div className="bg-felt-panel/80 border border-amber-500/30 p-1 rounded-2xl flex text-xs font-semibold text-felt-ink-muted shadow-inner">
           {[
