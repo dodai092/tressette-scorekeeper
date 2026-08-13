@@ -1,7 +1,7 @@
-// Bumped to v2 for the nested per-mode schema (flat v1 shape is
-// discarded rather than migrated — single-user personal app, not worth
-// migration logic for one stale localStorage entry).
-const STORAGE_KEY = "tressette-scorekeeper-state-v2";
+// Bumped to v3 to add the treseta3 (3-player) slice and the
+// tresetaPlayerCount toggle. Old v2 data is discarded rather than
+// migrated, same rationale as the v1 -> v2 bump above.
+const STORAGE_KEY = "tressette-scorekeeper-state-v3";
 
 export const DEFAULT_TRESETA_STATE = {
   targetScore: 41,
@@ -9,6 +9,14 @@ export const DEFAULT_TRESETA_STATE = {
   scoreTeam2: 0,
   gamesWon1: 0,
   gamesWon2: 0,
+  rounds: [],
+};
+
+export const DEFAULT_TRESETA3_STATE = {
+  targetScore: 41,
+  playerNames: ["Igrač 1", "Igrač 2", "Igrač 3"],
+  scores: [0, 0, 0],
+  gamesWon: [0, 0, 0],
   rounds: [],
 };
 
@@ -26,7 +34,9 @@ const DEFAULT_STATE = {
   activeMode: "treseta",
   team1Name: "Posedarje",
   team2Name: "Zagreb",
+  tresetaPlayerCount: 2,
   treseta: DEFAULT_TRESETA_STATE,
+  treseta3: DEFAULT_TRESETA3_STATE,
   briskula: DEFAULT_BRISKULA_STATE,
 };
 
@@ -35,6 +45,7 @@ const isValidShape = (parsed) =>
   typeof parsed === "object" &&
   (parsed.activeMode === "treseta" || parsed.activeMode === "briskula") &&
   typeof parsed.treseta === "object" &&
+  typeof parsed.treseta3 === "object" &&
   typeof parsed.briskula === "object";
 
 export const loadPersistedState = () => {
@@ -47,6 +58,7 @@ export const loadPersistedState = () => {
       ...DEFAULT_STATE,
       ...parsed,
       treseta: { ...DEFAULT_TRESETA_STATE, ...parsed.treseta },
+      treseta3: { ...DEFAULT_TRESETA3_STATE, ...parsed.treseta3 },
       briskula: { ...DEFAULT_BRISKULA_STATE, ...parsed.briskula },
     };
   } catch {
