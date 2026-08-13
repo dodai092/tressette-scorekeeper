@@ -129,7 +129,7 @@ Warm and low-saturation everywhere except the two mode accents, which are satura
 **Character:** A heavy serif carries every number and every heading that matters — it's what makes a "44" on a scorecard feel like a printed total rather than a UI counter. Sans-serif is reserved for interactive chrome (buttons, toggles, form fields). Monospace marks anything tabular or literally counted (hand numbers, running totals, timestamps), so the eye can scan a column of numbers without the display font's weight fighting it.
 
 ### Hierarchy
-- **Display** (font-black, `text-5xl`/48px, line-height 1): the live score number on each TeamCard — the single most important number on screen.
+- **Display** (font-black, `text-5xl`/48px, line-height 1): the live score number on each TeamCard — the single most important number on screen. The compact 3-player TeamCard variant (see Cards below) uses a smaller `text-3xl` for this same role, to fit three cards per row.
 - **Title** (font-bold, `text-base`–`text-xl`/16–20px, serif): app header title, modal headlines ("VICTORY!", "ČESALJ! SWEEP!").
 - **Body** (font-bold/font-semibold, `text-xs`/12px, sans): button labels, banner copy, form placeholders — the working size for nearly all UI text.
 - **Label** (font-bold, `text-[9-11px]`, mono, uppercase, tracked): section headings ("QUICK ADD", "AKUŽE (DECLARATIONS)"), score-suffix captions, hand/partija numbers, timestamps.
@@ -139,7 +139,7 @@ Warm and low-saturation everywhere except the two mode accents, which are satura
 
 ## Layout
 
-Single-column mobile-first layout, capped at `max-w-md` (28rem) and centered — this is a phone-in-hand tool, not a responsive multi-column dashboard. Content stacks vertically in a fixed rhythm: mode switcher → progress/target indicator → notices (tie/banter) → two-column team grid (`grid-cols-2`, `gap-3`) → primary entry surface → history list → reset action, all separated by a consistent `space-y-4` (16px) rhythm. The header is `sticky top-0` so mode switching and toggles stay reachable while the history list scrolls. History lists internally scroll (`max-h-64`–`max-h-80 overflow-y-auto`) rather than growing the page, so the fixed-height "table" never reflows around a long game.
+Single-column mobile-first layout, capped at `max-w-md` (28rem) and centered — this is a phone-in-hand tool, not a responsive multi-column dashboard. Content stacks vertically in a fixed rhythm: mode switcher → progress/target indicator → notices (tie/banter) → two-column team grid (`grid-cols-2`, `gap-3`) → primary entry surface → history list → reset action, all separated by a consistent `space-y-4` (16px) rhythm. (3-player Trešeta swaps the team grid for a three-column grid (`grid-cols-3`, `gap-2`) of compact TeamCards instead, so all three scores stay visible without scrolling.) The header is `sticky top-0` so mode switching and toggles stay reachable while the history list scrolls. History lists internally scroll (`max-h-64`–`max-h-80 overflow-y-auto`) rather than growing the page, so the fixed-height "table" never reflows around a long game.
 
 ## Elevation & Depth
 
@@ -163,7 +163,7 @@ Rounded throughout, never sharp — this is a soft, tactile object, not a techni
 
 ### Buttons
 - **Shape:** `rounded-xl` (12px) for quick-add/card-point buttons and primary actions; `rounded-full` for circular icon toggles (Sound/Wake-Lock/Banter).
-- **Quick Add / Card Points (Team-tinted):** background is the team's own tint (Harbor Blue `blue-100`/`blue-200` or Team Crimson `red-100`/`red-200`), never the mode accent — these buttons belong to the player, not the game mode.
+- **Quick Add / Card Points (Team-tinted):** background is the team's own tint (Harbor Blue `blue-100`/`blue-200`, Team Crimson `red-100`/`red-200`, or — for 3-player Trešeta's third player — an emerald `green` tint `emerald-100`/`emerald-200`), never the mode accent — these buttons belong to the player, not the game mode.
 - **Primary action (mode-tinted):** solid Gold Leaf or Garnet fill depending on active mode ("Start Next Partija", segmented target-score control's active state). `active:scale-95` on every button, no exceptions — the tactile-press feedback is load-bearing for the "physical table" feel.
 - **Destructive:** solid `red-700`/`red-800` regardless of active mode — reset confirmation is a semantic red, not a mode accent, so it never gets confused with Team Crimson or Garnet.
 - **Ghost/ Icon toggles:** transparent/dark until active, then accent-tinted background at low opacity (`bg-amber-500/20`) with a matching border — used for the header's Sound/Wake-Lock/Banter toggles.
