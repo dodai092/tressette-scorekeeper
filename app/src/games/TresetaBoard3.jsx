@@ -52,9 +52,8 @@ export default function TresetaBoard3({ soundEnabled, banterEnabled, state, onUp
     const gapThreshold = BANTER_GAP_THRESHOLD(targetScore);
 
     if (winner === null) {
-      const allOverTarget = updatedScores.every((s) => s >= targetScore);
       const leaders = updatedScores.filter((s) => s === max);
-      const isTie = allOverTarget && leaders.length > 1;
+      const isTie = max >= targetScore && leaders.length > 1;
       setTieNotice(isTie);
       if (banterEnabled && !isTie && gap >= gapThreshold) {
         setBanterJab(pickRandom(BANTER_LINES));
@@ -82,6 +81,8 @@ export default function TresetaBoard3({ soundEnabled, banterEnabled, state, onUp
     const newPts1 = Math.max(0, parseInt(pts1) || 0);
     const newPts2 = Math.max(0, parseInt(pts2) || 0);
     const newPts3 = Math.max(0, parseInt(pts3) || 0);
+
+    if (newPts1 === 0 && newPts2 === 0 && newPts3 === 0) return;
 
     const updatedScores = [scores[0] + newPts1, scores[1] + newPts2, scores[2] + newPts3];
 
@@ -138,11 +139,11 @@ export default function TresetaBoard3({ soundEnabled, banterEnabled, state, onUp
   const p2Raw = customPts2 === "" ? 0 : clamp11(parseInt(customPts2) || 0);
   const p3Preview = HAND_CAP - p1Raw - p2Raw;
   const isOverCap = p3Preview < 0;
-  const hasAnyInput = customPts1 !== "" || customPts2 !== "";
+  const bothFilled = customPts1 !== "" && customPts2 !== "";
 
   const handleCustomSubmit = (e) => {
     e.preventDefault();
-    if (!hasAnyInput || isOverCap) return;
+    if (!bothFilled || isOverCap) return;
 
     addRoundScore(p1Raw, p2Raw, p3Preview, `Hand (${p1Raw}/${p2Raw}/${p3Preview})`);
     setCustomPts1("");
@@ -256,9 +257,9 @@ export default function TresetaBoard3({ soundEnabled, banterEnabled, state, onUp
             pattern="[0-9]*"
             value={customPts1}
             onChange={(e) => handlePts1Change(e.target.value)}
-            placeholder={`${playerNames[0]} (0-${HAND_CAP})`}
+            placeholder={`0-${HAND_CAP}`}
             aria-label={`${playerNames[0]} bodovi ruke, 0 do ${HAND_CAP}`}
-            className="min-w-0 flex-1 bg-white border border-amber-300 rounded-xl px-2 py-2 text-sm font-semibold text-slate-900 outline-none focus:border-amber-600 focus-visible:ring-2 focus-visible:ring-amber-400 focus-visible:ring-offset-1 shadow-inner"
+            className="min-w-0 flex-1 bg-white border border-amber-300 rounded-xl px-2 py-2 text-base font-semibold text-slate-900 outline-none focus:border-amber-600 focus-visible:ring-2 focus-visible:ring-amber-400 focus-visible:ring-offset-1 shadow-inner"
           />
           <input
             type="text"
@@ -266,9 +267,9 @@ export default function TresetaBoard3({ soundEnabled, banterEnabled, state, onUp
             pattern="[0-9]*"
             value={customPts2}
             onChange={(e) => handlePts2Change(e.target.value)}
-            placeholder={`${playerNames[1]} (0-${HAND_CAP})`}
+            placeholder={`0-${HAND_CAP}`}
             aria-label={`${playerNames[1]} bodovi ruke, 0 do ${HAND_CAP}`}
-            className="min-w-0 flex-1 bg-white border border-amber-300 rounded-xl px-2 py-2 text-sm font-semibold text-slate-900 outline-none focus:border-amber-600 focus-visible:ring-2 focus-visible:ring-amber-400 focus-visible:ring-offset-1 shadow-inner"
+            className="min-w-0 flex-1 bg-white border border-amber-300 rounded-xl px-2 py-2 text-base font-semibold text-slate-900 outline-none focus:border-amber-600 focus-visible:ring-2 focus-visible:ring-amber-400 focus-visible:ring-offset-1 shadow-inner"
           />
 
           {/* Calculated Auto-Fill Badge for Player 3 */}
@@ -284,7 +285,7 @@ export default function TresetaBoard3({ soundEnabled, banterEnabled, state, onUp
 
           <button
             type="submit"
-            disabled={!hasAnyInput || isOverCap}
+            disabled={!bothFilled || isOverCap}
             className="min-h-11 px-3 bg-emerald-900 hover:bg-emerald-800 text-amber-200 font-bold text-xs rounded-xl active:scale-95 transition shrink-0 border border-amber-500/40 shadow-sm disabled:opacity-40 disabled:active:scale-100"
           >
             Dodaj
@@ -297,7 +298,7 @@ export default function TresetaBoard3({ soundEnabled, banterEnabled, state, onUp
         <div className="flex items-center justify-between border-b border-amber-200/80 pb-2">
           <h2 className="text-xs font-bold text-slate-900 flex items-center gap-1.5 font-serif">
             <History size={14} className="text-amber-700" />
-            povijest ruku ({rounds.length})
+            Povijest ruku ({rounds.length})
           </h2>
           {rounds.length > 0 && (
             <button

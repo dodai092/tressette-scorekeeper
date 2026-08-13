@@ -27,6 +27,16 @@ const TEAM_ACCENTS = {
   },
 };
 
+// Shared scorecard for both games. scoreSuffix and wonLabel let each game
+// phrase the sub-labels in its own terms (e.g. "/ 41 Points" + "Games Won"
+// for Trešeta vs "/ 61 to Win" + "Partije Won" for Briškula). quickAmounts
+// is a list of { value, top, bottom } — top is optional; when present the
+// button stacks a short label (e.g. a card name) over the point value,
+// which is how Briškula's card buttons work. Trešeta omits top and gets
+// a single centered line, unchanged from before.
+// compact shrinks padding, score text, and name text for tight layouts
+// (used by TresetaBoard3's 3-column player grid) — it never shrinks the
+// min-h-11 tap-target height on buttons/inputs.
 export default function TeamCard({
   icon,
   label,

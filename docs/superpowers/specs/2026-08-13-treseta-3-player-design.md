@@ -21,13 +21,16 @@ selectable option within the existing Trešeta mode.
 New sibling files alongside the existing `treseta.js` / `TresetaBoard.jsx`, matching this
 codebase's established pattern of one pure-logic module + one board component per variant:
 
-- **`src/games/treseta3.js`** — pure logic for 3-player scoring. Imports `TARGET_SCORE_OPTIONS`,
-  `HAND_CAP`, `clamp11` from `treseta.js` (shared constants, not duplicated). Adds:
-  - `computeWinner3(scores, targetScore, names)` — `scores` and `names` are 3-element arrays.
-    Returns the winning player's name once any player's score ≥ targetScore AND that player's
-    score is strictly higher than both others. If the top score is tied between 2+ players
-    (even if over target), returns `null` (match continues) — same tie-safe pattern as the
-    existing 2-player `computeWinner`.
+- **`src/games/treseta3.js`** — pure logic for 3-player scoring, with zero imports (it's pure
+  winner/totals logic only). `TresetaBoard3.jsx` imports `TARGET_SCORE_OPTIONS`, `HAND_CAP`, and
+  `clamp11` directly from `treseta.js` instead. Adds:
+  - `computeWinner3(scores, targetScore)` — `scores` is a 3-element array. Returns the winning
+    player's INDEX (not name) once any player's score ≥ targetScore AND that player's score is
+    strictly higher than both others. If the top score is tied between 2+ players (even if over
+    target), returns `null` (match continues) — same tie-safe pattern as the existing 2-player
+    `computeWinner`. Returning an index rather than a name is a deliberate deviation from the
+    original plan, decided during implementation: it avoids an ambiguous name → index reverse
+    lookup when two players share a display name.
   - `recalcTotals3(rounds)` — same newest-first backward-walk as `recalcTotals`, over
     `pts1/pts2/pts3` instead of `pts1/pts2`.
 - **`src/games/TresetaBoard3.jsx`** — new board component, structurally mirroring
@@ -79,10 +82,12 @@ Trešeta and Briškula today.
   glance without scrolling — this app is used for quick taps between hands, and pushing the
   hand-entry form below the fold on every hand would hurt that.
 - `TeamCard` (`src/components/TeamCard.jsx`) gains:
-  - A `compact` boolean prop: when true, shrinks the score text (`text-5xl` → smaller),
-    tightens padding, and simplifies akuže buttons to single-line labels (no stacked
-    top/bottom) so 3 cards fit comfortably on a phone width. Used only by `TresetaBoard3`;
-    `TresetaBoard`/`BriskulaBoard` are unaffected (prop defaults to falsy).
+  - A `compact` boolean prop: when true, shrinks the score text (`text-5xl` → smaller) and
+    tightens padding so 3 cards fit comfortably on a phone width. Used only by `TresetaBoard3`;
+    `TresetaBoard`/`BriskulaBoard` are unaffected (prop defaults to falsy). Akuže buttons are
+    already single-line for `TresetaBoard3` simply because it never passes a `top` value in
+    `quickAmounts` (same as the 2-player board) — the single-line rendering isn't a
+    `compact`-conditional behavior, it's the existing `quickAmounts` shape reused as-is.
   - A third entry in `TEAM_ACCENTS` (`green`) for Player 3, alongside the existing `blue`/`red`
     used for Players 1/2 — keeps 2-player mode's color language consistent.
 - Hand entry: two number inputs (Player 1, Player 2, each 0–11), Player 3's points shown as an
