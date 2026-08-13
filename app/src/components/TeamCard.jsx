@@ -17,15 +17,16 @@ const TEAM_ACCENTS = {
     gamesWon: "text-red-900",
     quickBtn: "bg-red-100 hover:bg-red-200 text-red-900 border-red-300/60",
   },
+  green: {
+    label: "text-emerald-800",
+    text: "text-emerald-900",
+    border: "border-emerald-200 focus:border-emerald-600",
+    ring: "focus-visible:ring-2 focus-visible:ring-emerald-400 focus-visible:ring-offset-1",
+    gamesWon: "text-emerald-900",
+    quickBtn: "bg-emerald-100 hover:bg-emerald-200 text-emerald-900 border-emerald-300/60",
+  },
 };
 
-// Shared scorecard for both games. scoreSuffix and wonLabel let each game
-// phrase the sub-labels in its own terms (e.g. "/ 41 Points" + "Games Won"
-// for Trešeta vs "/ 61 to Win" + "Partije Won" for Briškula). quickAmounts
-// is a list of { value, top, bottom } — top is optional; when present the
-// button stacks a short label (e.g. a card name) over the point value,
-// which is how Briškula's card buttons work. Trešeta omits top and gets
-// a single centered line, unchanged from before.
 export default function TeamCard({
   icon,
   label,
@@ -41,12 +42,17 @@ export default function TeamCard({
   quickAmounts,
   quickAddHeading,
   disabled,
+  compact = false,
 }) {
   const accent = TEAM_ACCENTS[accentColor];
 
   return (
-    <div className="bg-gradient-to-b from-amber-50 to-amber-100/90 rounded-3xl p-4 border-2 border-amber-300/80 shadow-xl relative flex flex-col justify-between text-slate-900">
-      <div className="space-y-3">
+    <div
+      className={`bg-gradient-to-b from-amber-50 to-amber-100/90 rounded-3xl border-2 border-amber-300/80 shadow-xl relative flex flex-col justify-between text-slate-900 ${
+        compact ? "p-2.5" : "p-4"
+      }`}
+    >
+      <div className={compact ? "space-y-1.5" : "space-y-3"}>
         <div>
           <label
             className={`text-[9px] uppercase font-bold ${accent.label} tracking-wider flex items-center gap-1 mb-0.5 font-mono`}
@@ -58,7 +64,9 @@ export default function TeamCard({
               type="text"
               value={name}
               onChange={(e) => onNameChange(e.target.value)}
-              className={`bg-transparent font-black text-xl ${accent.text} tracking-tight w-full outline-none border-b border-dashed ${accent.border} ${accent.ring} rounded-sm py-0.5 pr-5 font-serif`}
+              className={`bg-transparent font-black ${
+                compact ? "text-sm" : "text-xl"
+              } ${accent.text} tracking-tight w-full outline-none border-b border-dashed ${accent.border} ${accent.ring} rounded-sm py-0.5 pr-5 font-serif`}
               placeholder={namePlaceholder}
               aria-label={`${label} name`}
             />
@@ -72,7 +80,9 @@ export default function TeamCard({
         <div className="text-center py-1">
           <span
             key={score}
-            className="motion-score-pop text-5xl font-black tracking-tight text-slate-950 font-serif drop-shadow-sm inline-block"
+            className={`motion-score-pop ${
+              compact ? "text-3xl" : "text-5xl"
+            } font-black tracking-tight text-slate-950 font-serif drop-shadow-sm inline-block`}
             style={{ animation: "score-pop 320ms cubic-bezier(0.16, 1, 0.3, 1)" }}
           >
             {score}
@@ -87,7 +97,11 @@ export default function TeamCard({
       </div>
 
       {quickAmounts && quickAmounts.length > 0 && (
-        <div className="pt-2 border-t border-amber-200/80 space-y-1 mt-2">
+        <div
+          className={`border-t border-amber-200/80 space-y-1 ${
+            compact ? "pt-1.5 mt-1.5" : "pt-2 mt-2"
+          }`}
+        >
           <span className="text-[10px] font-bold text-slate-500 block uppercase tracking-wider">
             {quickAddHeading}
           </span>
