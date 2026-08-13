@@ -38,6 +38,12 @@ export default function App() {
   const updateBriskulaState = (partial) =>
     setBriskulaState((prev) => ({ ...prev, ...partial }));
 
+  // Whether the currently-selected Trešeta variant already has hands
+  // recorded — used to shrink the player-count toggle out of the way
+  // once a match is underway, so score cards get more room.
+  const tresetaMatchStarted =
+    (tresetaPlayerCount === 3 ? treseta3State.rounds : tresetaState.rounds).length > 0;
+
   // UI & Audio State — shared across both modes.
   const [soundEnabled, setSoundEnabled] = useState(true);
 
@@ -211,9 +217,13 @@ export default function App() {
         </div>
 
         {activeMode === "treseta" && (
-          <div className="bg-felt-panel/80 border border-amber-500/30 p-1 rounded-2xl flex text-xs font-semibold text-felt-ink-muted shadow-inner">
+          <div
+            className={`bg-felt-panel/80 border border-amber-500/30 rounded-2xl flex font-semibold text-felt-ink-muted shadow-inner transition-all duration-200 ${
+              tresetaMatchStarted ? "p-0.5 text-[10px]" : "p-1 text-xs"
+            }`}
+          >
             {[
-              { key: 2, label: "👥 2 igrača" },
+              { key: 2, label: "👥 Ekipe" },
               { key: 3, label: "👥 3 igrača" },
             ].map(({ key, label }) => (
               <button
@@ -222,7 +232,9 @@ export default function App() {
                   setTresetaPlayerCount(key);
                   if (soundEnabled) playSound("tap");
                 }}
-                className={`flex-1 min-h-11 rounded-xl transition-all duration-200 flex items-center justify-center gap-1.5 ${
+                className={`flex-1 rounded-xl transition-all duration-200 flex items-center justify-center gap-1.5 ${
+                  tresetaMatchStarted ? "min-h-7" : "min-h-11"
+                } ${
                   tresetaPlayerCount === key
                     ? "bg-gradient-to-r from-amber-500 to-yellow-500 text-slate-950 font-bold shadow-md"
                     : "hover:text-felt-ink"
