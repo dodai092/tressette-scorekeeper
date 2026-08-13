@@ -4,6 +4,7 @@ import { playSound } from "./sound.js";
 import { loadPersistedState, savePersistedState } from "./storage.js";
 import { MODE_ACCENTS } from "./modeAccents.js";
 import TresetaBoard from "./games/TresetaBoard.jsx";
+import TresetaBoard3 from "./games/TresetaBoard3.jsx";
 import BriskulaBoard from "./games/BriskulaBoard.jsx";
 
 const CONTENT_RAIL_CLASS = "w-full max-w-md md:max-w-2xl mx-auto";
@@ -17,13 +18,23 @@ export default function App() {
   const [team1Name, setTeam1Name] = useState(persisted.team1Name);
   const [team2Name, setTeam2Name] = useState(persisted.team2Name);
 
+  // Trešeta player-count toggle (2 = teams, 3 = individual play). Its
+  // own persisted field, independent of activeMode, so it's remembered
+  // across reloads without affecting Briškula.
+  const [tresetaPlayerCount, setTresetaPlayerCount] = useState(persisted.tresetaPlayerCount);
+
   // Per-mode score state — each mode keeps its own progress when you
   // switch away and back, since only the active board is mounted.
+  // treseta3 is a fully independent match from treseta (2-player), so
+  // toggling player count never touches either match's history.
   const [tresetaState, setTresetaState] = useState(persisted.treseta);
+  const [treseta3State, setTreseta3State] = useState(persisted.treseta3);
   const [briskulaState, setBriskulaState] = useState(persisted.briskula);
 
   const updateTresetaState = (partial) =>
     setTresetaState((prev) => ({ ...prev, ...partial }));
+  const updateTreseta3State = (partial) =>
+    setTreseta3State((prev) => ({ ...prev, ...partial }));
   const updateBriskulaState = (partial) =>
     setBriskulaState((prev) => ({ ...prev, ...partial }));
 
@@ -40,19 +51,29 @@ export default function App() {
 
   useEffect(() => {
     // Debounced so typing a team name doesn't re-serialize the whole
-    // match state (including both modes' full rounds history) on every
-    // keystroke.
+    // match state (including every mode/variant's full rounds history)
+    // on every keystroke.
     const timeoutId = setTimeout(() => {
       savePersistedState({
         activeMode,
         team1Name,
         team2Name,
+        tresetaPlayerCount,
         treseta: tresetaState,
+        treseta3: treseta3State,
         briskula: briskulaState,
       });
     }, 300);
     return () => clearTimeout(timeoutId);
-  }, [activeMode, team1Name, team2Name, tresetaState, briskulaState]);
+  }, [
+    activeMode,
+    team1Name,
+    team2Name,
+    tresetaPlayerCount,
+    tresetaState,
+    treseta3State,
+    briskulaState,
+  ]);
 
   return (
     <div
@@ -189,17 +210,50 @@ export default function App() {
           ))}
         </div>
 
+        {activeMode === "treseta" && (
+          <div className="bg-felt-panel/80 border border-amber-500/30 p-1 rounded-2xl flex text-xs font-semibold text-felt-ink-muted shadow-inner">
+            {[
+              { key: 2, label: "👥 2 igrača" },
+              { key: 3, label: "👥 3 igrača" },
+            ].map(({ key, label }) => (
+              <button
+                key={key}
+                onClick={() => {
+                  setTresetaPlayerCount(key);
+                  if (soundEnabled) playSound("tap");
+                }}
+                className={`flex-1 min-h-11 rounded-xl transition-all duration-200 flex items-center justify-center gap-1.5 ${
+                  tresetaPlayerCount === key
+                    ? "bg-gradient-to-r from-amber-500 to-yellow-500 text-slate-950 font-bold shadow-md"
+                    : "hover:text-felt-ink"
+                }`}
+              >
+                <span>{label}</span>
+              </button>
+            ))}
+          </div>
+        )}
+
         {activeMode === "treseta" ? (
-          <TresetaBoard
-            soundEnabled={soundEnabled}
-            banterEnabled={banterEnabled}
-            team1Name={team1Name}
-            team2Name={team2Name}
-            onTeam1NameChange={setTeam1Name}
-            onTeam2NameChange={setTeam2Name}
-            state={tresetaState}
-            onUpdate={updateTresetaState}
-          />
+          tresetaPlayerCount === 3 ? (
+            <TresetaBoard3
+              soundEnabled={soundEnabled}
+              banterEnabled={banterEnabled}
+              state={treseta3State}
+              onUpdate={updateTreseta3State}
+            />
+          ) : (
+            <TresetaBoard
+              soundEnabled={soundEnabled}
+              banterEnabled={banterEnabled}
+              team1Name={team1Name}
+              team2Name={team2Name}
+              onTeam1NameChange={setTeam1Name}
+              onTeam2NameChange={setTeam2Name}
+              state={tresetaState}
+              onUpdate={updateTresetaState}
+            />
+          )
         ) : (
           <BriskulaBoard
             soundEnabled={soundEnabled}
